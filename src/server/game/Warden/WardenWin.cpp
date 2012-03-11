@@ -212,6 +212,8 @@ void WardenWin::RequestData()
     ByteBuffer buff;
     buff << uint8(WARDEN_SMSG_CHEAT_CHECKS_REQUEST);
 
+    ACE_READ_GUARD(ACE_RW_Mutex, g, sWardenCheckMgr->_checkStoreLock);
+
     for (uint32 i = 0; i < sWorld->getIntConfig(CONFIG_WARDEN_NUM_OTHER_CHECKS); ++i)
     {
         // If todo list is done break loop (will be filled on next Update() run)
@@ -323,7 +325,7 @@ void WardenWin::RequestData()
     for (std::list<uint16>::iterator itr = _currentChecks.begin(); itr != _currentChecks.end(); ++itr)
         stream << *itr << " ";
 
-    sLog->outWarden("%s", stream.str().c_str());
+    sLog->outDebug(LOG_FILTER_WARDEN, "%s", stream.str().c_str());
 }
 
 void WardenWin::HandleData(ByteBuffer &buff)
@@ -376,6 +378,8 @@ void WardenWin::HandleData(ByteBuffer &buff)
     WardenCheck *rd;
     uint8 type;
     uint16 checkFailed = 0;
+
+    ACE_READ_GUARD(ACE_RW_Mutex, g, sWardenCheckMgr->_checkStoreLock);
 
     for (std::list<uint16>::iterator itr = _currentChecks.begin(); itr != _currentChecks.end(); ++itr)
     {
