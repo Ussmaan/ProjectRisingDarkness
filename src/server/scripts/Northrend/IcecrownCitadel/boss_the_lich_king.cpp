@@ -70,8 +70,6 @@ enum Texts
     SAY_TERENAS_INTRO_3             = 2,
 };
 
-#define SAY_DEATH                   "..."
-
 enum Spells
 {
     // The Lich King
@@ -264,8 +262,6 @@ enum Events
     EVENT_TELEPORT                  = 62,
     EVENT_MOVE_TO_LICH_KING         = 63,
     EVENT_DESPAWN_SELF              = 64,
-    //Play Movie on death
-    EVENT_MOVIE                     = 65,
 };
 
 enum EventGroups
@@ -503,13 +499,10 @@ class boss_the_lich_king : public CreatureScript
             void JustDied(Unit* /*killer*/)
             {
                 _JustDied();
-                //DoCastAOE(SPELL_PLAY_MOVIE, false);
-                me->SetLevitate(false);
-                me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x03);
+                DoCastAOE(SPELL_PLAY_MOVIE, false);
+                me->SetDisableGravity(false);
+                me->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
                 me->GetMotionMaster()->MoveFall();
-                me->PlayDirectSound(17374);
-                me->MonsterYell(SAY_DEATH, LANG_UNIVERSAL, 0);
-                events.ScheduleEvent(EVENT_MOVIE, 8000);
             }
 
             void EnterCombat(Unit* target)
@@ -592,8 +585,8 @@ class boss_the_lich_king : public CreatureScript
                         SendLightOverride(0, 5000);
                         break;
                     case ACTION_BREAK_FROSTMOURNE:
-                        DoCastAOE(SPELL_SUMMON_BROKEN_FROSTMOURNE);
-                        DoCastAOE(SPELL_SUMMON_BROKEN_FROSTMOURNE_2);
+                        me->CastSpell((Unit*)NULL, SPELL_SUMMON_BROKEN_FROSTMOURNE, TRIGGERED_IGNORE_CAST_IN_PROGRESS);
+                        me->CastSpell((Unit*)NULL, SPELL_SUMMON_BROKEN_FROSTMOURNE_2, TRIGGERED_IGNORE_CAST_IN_PROGRESS);
                         SetEquipmentSlots(false, EQUIP_BROKEN_FROSTMOURNE);
                         events.ScheduleEvent(EVENT_OUTRO_TALK_6, 3500, 0, PHASE_OUTRO);
                         break;
@@ -1072,16 +1065,15 @@ class boss_the_lich_king : public CreatureScript
                             Talk(SAY_LK_OUTRO_6);
                             if (Creature* tirion = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_HIGHLORD_TIRION_FORDRING)))
                                 tirion->SetFacingToObject(me);
-                            me->ClearUnitState(UNIT_STATE_CASTING);
-                            DoCastAOE(SPELL_SUMMON_BROKEN_FROSTMOURNE_3);
+                            me->CastSpell((Unit*)NULL, SPELL_SUMMON_BROKEN_FROSTMOURNE_3, TRIGGERED_IGNORE_CAST_IN_PROGRESS);
                             SetEquipmentSlots(false, EQUIP_UNEQUIP);
                             break;
                         case EVENT_OUTRO_SOUL_BARRAGE:
-                            DoCastAOE(SPELL_SOUL_BARRAGE);
+                            me->CastSpell((Unit*)NULL, SPELL_SOUL_BARRAGE, TRIGGERED_IGNORE_CAST_IN_PROGRESS);
                             sCreatureTextMgr->SendSound(me, SOUND_PAIN, CHAT_MSG_MONSTER_YELL, 0, TEXT_RANGE_NORMAL, TEAM_OTHER, false);
                             // set flight
-                            me->SetLevitate(true);
-                            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x03);
+                            me->SetDisableGravity(true);
+                            me->SetByteFlag(UNIT_FIELD_BYTES_1, 3, UNIT_BYTE1_FLAG_ALWAYS_STAND | UNIT_BYTE1_FLAG_HOVER);
                             me->GetMotionMaster()->MovePoint(POINT_LK_OUTRO_2, OutroFlying);
                             break;
                         case EVENT_OUTRO_TALK_7:
@@ -1093,9 +1085,6 @@ class boss_the_lich_king : public CreatureScript
                         case EVENT_BERSERK:
                             Talk(SAY_LK_BERSERK);
                             DoCast(me, SPELL_BERSERK2);
-                            break;
-                        case EVENT_MOVIE:
-                            DoCastAOE(SPELL_PLAY_MOVIE, false);
                             break;
                         default:
                             break;
