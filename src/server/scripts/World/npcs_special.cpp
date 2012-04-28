@@ -4224,8 +4224,8 @@ public:
             {
                 EntryCheckPredicate pred(NPC_HEADLESS_HORSEMAN_FIRE_DND);
             	Fires.DoAction(ACTION_FAIL_EVENT, pred);
-                EntryCheckPredicate pred(NPC_SHADE_OF_THE_HORSEMAN);
-            	Fires.DoAction(ACTION_FAIL_EVENT, pred);
+                EntryCheckPredicate pred1(NPC_SHADE_OF_THE_HORSEMAN);
+            	Fires.DoAction(ACTION_FAIL_EVENT, pred1);
             }
             else 
             {
