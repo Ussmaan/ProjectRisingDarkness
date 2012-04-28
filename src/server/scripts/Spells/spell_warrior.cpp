@@ -365,7 +365,7 @@ class spell_warr_concussion_blow : public SpellScriptLoader
 
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
-                SetHitDamage(GetHitDamage() + CalculatePctF(GetHitDamage(),GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK)));
+                SetHitDamage(CalculatePctN(GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK), GetEffectValue()));
             }
 
             void Register()
@@ -397,8 +397,7 @@ class spell_warr_bloodthirst : public SpellScriptLoader
             void HandleDummy(SpellEffIndex /* effIndex */)
             {
                 int32 damage = GetEffectValue();
-                if (GetHitUnit())
-                    GetCaster()->CastCustomSpell(GetHitUnit(), SPELL_BLOODTHIRST, &damage, NULL, NULL, true, NULL);
+                GetCaster()->CastCustomSpell(GetCaster(), SPELL_BLOODTHIRST, &damage, NULL, NULL, true, NULL);
             }
 
             void Register()
@@ -413,6 +412,51 @@ class spell_warr_bloodthirst : public SpellScriptLoader
         }
 };
 
+enum Overpower
+{
+    SPELL_UNRELENTING_ASSAULT_RANK_1        = 46859,
+    SPELL_UNRELENTING_ASSAULT_RANK_2        = 46860,
+    SPELL_UNRELENTING_ASSAULT_TRIGGER_1     = 64849,
+    SPELL_UNRELENTING_ASSAULT_TRIGGER_2     = 64850,
+};
+
+class spell_warr_overpower : public SpellScriptLoader
+{
+public:
+    spell_warr_overpower() : SpellScriptLoader("spell_warr_overpower") { }
+
+    class spell_warr_overpower_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_warr_overpower_SpellScript);
+
+        void HandleEffect(SpellEffIndex /* effIndex */)
+        {
+            uint32 spellId = 0;
+            if (GetCaster()->HasAura(SPELL_UNRELENTING_ASSAULT_RANK_1))
+                spellId = SPELL_UNRELENTING_ASSAULT_TRIGGER_1;
+            else if (GetCaster()->HasAura(SPELL_UNRELENTING_ASSAULT_RANK_2))
+                spellId = SPELL_UNRELENTING_ASSAULT_TRIGGER_2;
+
+            if (!spellId)
+                return;
+
+            if (Player* target = GetHitPlayer())
+                if (target->HasUnitState(UNIT_STATE_CASTING))
+                    target->CastSpell(target, spellId, true);
+        }
+
+        void Register()
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_warr_overpower_SpellScript::HandleEffect, EFFECT_0, SPELL_EFFECT_ANY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_warr_overpower_SpellScript();
+    }
+};
+
 void AddSC_warrior_spell_scripts()
 {
     new spell_warr_last_stand();
@@ -424,4 +468,5 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_execute();
     new spell_warr_concussion_blow();
     new spell_warr_bloodthirst();
+    new spell_warr_overpower();
 }

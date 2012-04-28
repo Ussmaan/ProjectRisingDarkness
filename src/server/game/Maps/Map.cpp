@@ -816,20 +816,20 @@ void Map::RemoveCreatureFromMoveList(Creature* c)
 void Map::MoveAllCreaturesInMoveList()
 {
     _creatureToMoveLock = true;
-    for(std::vector<Creature*>::iterator itr = _creaturesToMove.begin(); itr != _creaturesToMove.end(); ++itr)
+    for (std::vector<Creature*>::iterator itr = _creaturesToMove.begin(); itr != _creaturesToMove.end(); ++itr)
     {
         Creature* c = *itr;
-        if(c->FindMap() != this) //pet is teleported to another map
+        if (c->FindMap() != this) //pet is teleported to another map
             continue;
 
-        if(c->_moveState != CREATURE_CELL_MOVE_ACTIVE)
+        if (c->_moveState != CREATURE_CELL_MOVE_ACTIVE)
         {
             c->_moveState = CREATURE_CELL_MOVE_NONE;
             continue;
         }
 
         c->_moveState = CREATURE_CELL_MOVE_NONE;
-        if(!c->IsInWorld())
+        if (!c->IsInWorld())
             continue;
 
         // do move or do move to respawn or remove creature if previous all fail
@@ -1555,8 +1555,11 @@ inline ZLiquidStatus GridMap::getLiquidStatus(float x, float y, float z, uint8 R
                 {
                     uint32 overrideLiquid = area->LiquidTypeOverride[liquidEntry->Type];
                     if (!overrideLiquid && area->zone)
-                        if (area = GetAreaEntryByAreaID(area->zone))
+                    {
+                        area = GetAreaEntryByAreaID(area->zone);
+                        if (area)
                             overrideLiquid = area->LiquidTypeOverride[liquidEntry->Type];
+                    }
 
                     if (LiquidTypeEntry const* liq = sLiquidTypeStore.LookupEntry(overrideLiquid))
                     {
@@ -1828,8 +1831,11 @@ ZLiquidStatus Map::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidTyp
                     {
                         uint32 overrideLiquid = area->LiquidTypeOverride[liquidFlagType];
                         if (!overrideLiquid && area->zone)
-                            if (area = GetAreaEntryByAreaID(area->zone))
+                        {
+                            area = GetAreaEntryByAreaID(area->zone);
+                            if (area)
                                 overrideLiquid = area->LiquidTypeOverride[liquidFlagType];
+                        }
 
                         if (LiquidTypeEntry const* liq = sLiquidTypeStore.LookupEntry(overrideLiquid))
                         {
@@ -2378,7 +2384,7 @@ bool InstanceMap::CanEnter(Player* player)
                     return false;
                 }
                 // player inside instance has no group or his groups is different to entering player's one, deny entry
-                if (!iPlayer->GetGroup() || iPlayer->GetGroup() != player->GetGroup() )
+                if (!iPlayer->GetGroup() || iPlayer->GetGroup() != player->GetGroup())
                 {
                     player->SendTransferAborted(GetId(), TRANSFER_ABORT_MAX_PLAYERS);
                     return false;
@@ -2556,7 +2562,11 @@ void InstanceMap::CreateInstanceData(bool load)
     if (load)
     {
         // TODO: make a global storage for this
-        QueryResult result = CharacterDatabase.PQuery("SELECT data, completedEncounters FROM instance WHERE map = '%u' AND id = '%u'", GetId(), i_InstanceId);
+        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_INSTANCE);
+        stmt->setUInt16(0, uint16(GetId()));
+        stmt->setUInt32(1, i_InstanceId);
+        PreparedQueryResult result = CharacterDatabase.Query(stmt);
+
         if (result)
         {
             Field* fields = result->Fetch();

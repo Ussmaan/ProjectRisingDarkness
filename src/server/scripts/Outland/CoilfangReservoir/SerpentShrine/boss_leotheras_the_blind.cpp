@@ -53,6 +53,7 @@ EndScriptData */
 #define MODEL_NIGHTELF          20514
 #define DEMON_FORM              21875
 #define MOB_SPELLBINDER         21806
+#define INNER_DEMON_VICTIM      1
 
 #define SAY_AGGRO               -1548009
 #define SAY_SWITCH_TO_DEMON     -1548010
@@ -94,9 +95,23 @@ public:
             ShadowBolt_Timer = 10000;
             Link_Timer = 1000;
         }
-        void JustDied(Unit* /*victim*/)
+
+        void SetGUID(uint64 guid, int32 id/* = 0 */)
         {
-            Unit* unit = Unit::GetUnit((*me), victimGUID);
+            if (id == INNER_DEMON_VICTIM)
+                victimGUID = guid;
+        }
+
+        uint64 GetGUID(int32 id/* = 0 */)
+        {
+            if (id == INNER_DEMON_VICTIM)
+                return victimGUID;
+            return 0;
+        }
+
+        void JustDied(Unit* /*killer*/)
+        {
+            Unit* unit = Unit::GetUnit(*me, victimGUID);
             if (unit && unit->HasAura(SPELL_INSIDIOUS_WHISPER))
                 unit->RemoveAurasDueToSpell(SPELL_INSIDIOUS_WHISPER);
         }
@@ -125,7 +140,7 @@ public:
             if (me->getVictim()->GetGUID() != victimGUID)
             {
                 DoModifyThreatPercent(me->getVictim(), -100);
-                Unit* owner = Unit::GetUnit((*me), victimGUID);
+                Unit* owner = Unit::GetUnit(*me, victimGUID);
                 if (owner && owner->isAlive())
                 {
                     me->AddThreat(owner, 999999);
@@ -219,6 +234,7 @@ public:
             IsFinalForm = false;
             NeedThreatReset = false;
             EnrageUsed = false;
+            memset(InnderDemon, 0, sizeof(InnderDemon));
             InnerDemon_Count = 0;
             me->SetSpeed(MOVE_RUN, 2.0f, true);
             me->SetDisplayId(MODEL_NIGHTELF);
@@ -357,7 +373,7 @@ public:
                     Creature* unit = Unit::GetCreature((*me), InnderDemon[i]);
                     if (unit && unit->isAlive())
                     {
-                        Unit* unit_target = Unit::GetUnit(*unit, CAST_AI(mob_inner_demon::mob_inner_demonAI, unit->AI())->victimGUID);
+                        Unit* unit_target = Unit::GetUnit(*unit, unit->AI()->GetGUID(INNER_DEMON_VICTIM));
                         if (unit_target && unit_target->isAlive())
                         {
                             unit->CastSpell(unit_target, SPELL_CONSUMING_MADNESS, true);
@@ -383,7 +399,7 @@ public:
             }
         }
 
-        void JustDied(Unit* /*victim*/)
+        void JustDied(Unit* /*killer*/)
         {
             DoScriptText(SAY_DEATH, me);
 
@@ -525,7 +541,7 @@ public:
                             if (demon)
                             {
                                 demon->AI()->AttackStart((*itr));
-                                CAST_AI(mob_inner_demon::mob_inner_demonAI, demon->AI())->victimGUID = (*itr)->GetGUID();
+                                demon->AI()->SetGUID((*itr)->GetGUID(), INNER_DEMON_VICTIM);
 
                                 (*itr)->AddAura(SPELL_INSIDIOUS_WHISPER, *itr);
 
@@ -625,7 +641,7 @@ public:
             DoScriptText(RAND(SAY_DEMON_SLAY1, SAY_DEMON_SLAY2, SAY_DEMON_SLAY3), me);
         }
 
-        void JustDied(Unit* /*victim*/)
+        void JustDied(Unit* /*killer*/)
         {
             //invisibility (blizzlike, at the end of the fight he doesn't die, he disappears)
             DoCast(me, 8149, true);

@@ -226,7 +226,7 @@ public:
             DoScriptText(RAND(SAY_SLAY1, SAY_SLAY2, SAY_SLAY3), me);
         }
 
-        void JustDied(Unit* /*victim*/)
+        void JustDied(Unit* /*killer*/)
         {
             DoScriptText(SAY_DEATH, me);
 
@@ -491,7 +491,7 @@ public:
                     Creature* coilfangElite = me->SummonCreature(COILFANG_ELITE, CoilfangElitePos[pos][0], CoilfangElitePos[pos][1], CoilfangElitePos[pos][2], CoilfangElitePos[pos][3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
                     if (coilfangElite)
                     {
-                        if (Unit* target = target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
                             coilfangElite->AI()->AttackStart(target);
                         else if (me->getVictim())
                             coilfangElite->AI()->AttackStart(me->getVictim());
@@ -783,7 +783,7 @@ public:
                 if (instance)
                 {
                     // check if vashj is death
-                    Unit* Vashj = Unit::GetUnit((*me), instance->GetData64(DATA_LADYVASHJ));
+                    Unit* Vashj = Unit::GetUnit(*me, instance->GetData64(DATA_LADYVASHJ));
                     if (!Vashj || (Vashj && !Vashj->isAlive()) || (Vashj && CAST_AI(boss_lady_vashj::boss_lady_vashjAI, CAST_CRE(Vashj)->AI())->Phase != 3))
                     {
                         // remove
@@ -839,7 +839,7 @@ public:
 
             if (CheckTimer <= diff)
             {
-                Unit* vashj = Unit::GetUnit((*me), instance->GetData64(DATA_LADYVASHJ));
+                Unit* vashj = Unit::GetUnit(*me, instance->GetData64(DATA_LADYVASHJ));
 
                 if (vashj && vashj->isAlive())
                 {

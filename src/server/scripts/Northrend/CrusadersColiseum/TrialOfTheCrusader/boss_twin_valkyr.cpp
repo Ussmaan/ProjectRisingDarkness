@@ -619,8 +619,7 @@ public:
         {
             if (m_uiRangeCheckTimer < uiDiff)
             {
-                if (Unit* target = me->SelectNearestTarget(2.0f))
-                    if (target->GetTypeId() == TYPEID_PLAYER && target->isAlive())
+                if (me->SelectNearestPlayer(2.0f))
                     {
                         DoCastAOE(SPELL_UNLEASHED_DARK);
                         me->GetMotionMaster()->MoveIdle();
@@ -661,8 +660,7 @@ public:
         {
             if (m_uiRangeCheckTimer < uiDiff)
             {
-                if (Unit* target = me->SelectNearestTarget(2.0f))
-                    if (target->GetTypeId() == TYPEID_PLAYER && target->isAlive())
+                if (me->SelectNearestPlayer(2.0f))
                     {
                         DoCastAOE(SPELL_UNLEASHED_LIGHT);
                         me->GetMotionMaster()->MoveIdle();
@@ -761,7 +759,7 @@ class spell_powering_up : public SpellScriptLoader
 
             uint32 spellId;
 
-            bool Validate(SpellEntry const* /*spellEntry*/)
+            bool Load()
             {
                 spellId = sSpellMgr->GetSpellIdForDifficulty(SPELL_SURGE_OF_SPEED, GetCaster());
                 if (!sSpellMgr->GetSpellInfo(spellId))
@@ -771,7 +769,7 @@ class spell_powering_up : public SpellScriptLoader
 
             void HandleScriptEffect(SpellEffIndex /*effIndex*/)
             {
-                if (Unit* target = GetTargetUnit())
+                if (Unit* target = GetExplTargetUnit())
                     if (urand(0, 99) < 15)
                         target->CastSpell(target, spellId, true);
             }

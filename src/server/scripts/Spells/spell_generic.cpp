@@ -169,7 +169,7 @@ class spell_gen_burn_brutallus : public SpellScriptLoader
         }
 };
 
-enum eCannibalizeSpells
+enum CannibalizeSpells
 {
     SPELL_CANNIBALIZE_TRIGGERED = 20578,
 };
@@ -224,7 +224,7 @@ class spell_gen_cannibalize : public SpellScriptLoader
 };
 
 // 45472 Parachute
-enum eParachuteSpells
+enum ParachuteSpells
 {
     SPELL_PARACHUTE         = 45472,
     SPELL_PARACHUTE_BUFF    = 44795,
@@ -365,7 +365,7 @@ class spell_gen_remove_flight_auras : public SpellScriptLoader
 };
 
 // 66118 Leeching Swarm
-enum eLeechingSwarmSpells
+enum LeechingSwarmSpells
 {
     SPELL_LEECHING_SWARM_DMG    = 66240,
     SPELL_LEECHING_SWARM_HEAL   = 66125,
@@ -481,7 +481,7 @@ class spell_gen_elune_candle : public SpellScriptLoader
 };
 
 // 24750 Trick
-enum eTrickSpells
+enum TrickSpells
 {
     SPELL_PIRATE_COSTUME_MALE           = 24708,
     SPELL_PIRATE_COSTUME_FEMALE         = 24709,
@@ -1276,30 +1276,30 @@ class spell_gen_magic_rooster : public SpellScriptLoader
 
 class spell_gen_allow_cast_from_item_only : public SpellScriptLoader
 {
-public:
-    spell_gen_allow_cast_from_item_only() : SpellScriptLoader("spell_gen_allow_cast_from_item_only") { }
+    public:
+        spell_gen_allow_cast_from_item_only() : SpellScriptLoader("spell_gen_allow_cast_from_item_only") { }
 
-    class spell_gen_allow_cast_from_item_only_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_gen_allow_cast_from_item_only_SpellScript);
-
-        SpellCastResult CheckRequirement()
+        class spell_gen_allow_cast_from_item_only_SpellScript : public SpellScript
         {
-            if (!GetCastItem())
-                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
-            return SPELL_CAST_OK;
-        }
+            PrepareSpellScript(spell_gen_allow_cast_from_item_only_SpellScript);
 
-        void Register()
+            SpellCastResult CheckRequirement()
+            {
+                if (!GetCastItem())
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+                return SPELL_CAST_OK;
+            }
+
+            void Register()
+            {
+                OnCheckCast += SpellCheckCastFn(spell_gen_allow_cast_from_item_only_SpellScript::CheckRequirement);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
         {
-            OnCheckCast += SpellCheckCastFn(spell_gen_allow_cast_from_item_only_SpellScript::CheckRequirement);
+            return new spell_gen_allow_cast_from_item_only_SpellScript();
         }
-    };
-
-    SpellScript* GetSpellScript() const
-    {
-        return new spell_gen_allow_cast_from_item_only_SpellScript();
-    }
 };
 
 enum Launch
@@ -1324,7 +1324,7 @@ class spell_gen_launch : public SpellScriptLoader
 
             void Launch()
             {
-                WorldLocation const* const position = GetTargetDest();
+                WorldLocation const* const position = GetExplTargetDest();
 
                 if (Player* player = GetHitPlayer())
                 {
@@ -2610,41 +2610,102 @@ class spell_gen_ds_flush_knockback : public SpellScriptLoader
         }
 };
 
-class spell_gen_toy_train_set : public SpellScriptLoader
+class spell_gen_wg_water : public SpellScriptLoader
 {
     public:
-        spell_gen_toy_train_set() : SpellScriptLoader("spell_gen_toy_train_set") { }
+        spell_gen_wg_water() : SpellScriptLoader("spell_gen_wg_water") {}
 
-        class spell_gen_toy_train_set_SpellScript : public SpellScript
+        class spell_gen_wg_water_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_gen_toy_train_set_SpellScript);
+            PrepareSpellScript(spell_gen_wg_water_SpellScript);
 
-            void HandleScript(SpellEffIndex /*effIndex*/)
+            SpellCastResult CheckCast()
             {
-                if (Player* target = GetHitPlayer())
-                {
-                    target->HandleEmoteCommand(EMOTE_ONESHOT_TRAIN);
-
-                    WorldPacket data(SMSG_TEXT_EMOTE, 8 + 4 + 4 + 4 + 1);
-                    data << uint64(target->GetGUID());
-                    data << uint32(TEXT_EMOTE_TRAIN);
-                    data << uint32(0);
-                    data << uint32(1);
-                    data << uint8(0);
-                    target->SendMessageToSet(&data, true);
-                }
+                if (!GetSpellInfo()->CheckTargetCreatureType(GetCaster()))
+                    return SPELL_FAILED_DONT_REPORT;
+                return SPELL_CAST_OK;
             }
 
             void Register()
             {
-                OnEffectHitTarget += SpellEffectFn(spell_gen_toy_train_set_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+                OnCheckCast += SpellCheckCastFn(spell_gen_wg_water_SpellScript::CheckCast);
             }
         };
 
         SpellScript* GetSpellScript() const
         {
-            return new spell_gen_toy_train_set_SpellScript();
+            return new spell_gen_wg_water_SpellScript();
         }
+};
+
+class spell_gen_count_pct_from_max_hp : public SpellScriptLoader
+{
+    public:
+        spell_gen_count_pct_from_max_hp(char const* name, int32 damagePct = 0) : SpellScriptLoader(name), _damagePct(damagePct) { }
+
+        class spell_gen_count_pct_from_max_hp_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_gen_count_pct_from_max_hp_SpellScript)
+
+        public:
+            spell_gen_count_pct_from_max_hp_SpellScript(int32 damagePct) : SpellScript(), _damagePct(damagePct) { }
+
+            void RecalculateDamage()
+            {
+                if (!_damagePct)
+                    _damagePct = GetHitDamage();
+
+                SetHitDamage(GetHitUnit()->CountPctFromMaxHealth(_damagePct));
+            }
+
+            void Register()
+            {
+                OnHit += SpellHitFn(spell_gen_count_pct_from_max_hp_SpellScript::RecalculateDamage);
+            }
+
+        private:
+            int32 _damagePct;
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new spell_gen_count_pct_from_max_hp_SpellScript(_damagePct);
+        }
+
+    private:
+        int32 _damagePct;
+};
+
+class spell_gen_despawn_self : public SpellScriptLoader
+{
+public:
+    spell_gen_despawn_self() : SpellScriptLoader("spell_gen_despawn_self") { }
+
+    class spell_gen_despawn_self_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_despawn_self_SpellScript);
+
+        bool Load()
+        {
+            return GetCaster()->GetTypeId() == TYPEID_UNIT;
+        }
+
+        void HandleDummy(SpellEffIndex effIndex)
+        {
+            if (GetSpellInfo()->Effects[effIndex].Effect == SPELL_EFFECT_DUMMY || GetSpellInfo()->Effects[effIndex].Effect == SPELL_EFFECT_SCRIPT_EFFECT)
+                GetCaster()->ToCreature()->DespawnOrUnsummon();
+        }
+
+        void Register()
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_gen_despawn_self_SpellScript::HandleDummy, EFFECT_ALL, SPELL_EFFECT_ANY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_gen_despawn_self_SpellScript();
+    }
 };
 
 void AddSC_generic_spell_scripts()
@@ -2699,4 +2760,8 @@ void AddSC_generic_spell_scripts()
     new spell_gen_ds_flush_knockback();
     new spell_gen_tournament_duel();
     new spell_gen_elune_candle();
+    new spell_gen_wg_water();
+    new spell_gen_count_pct_from_max_hp("spell_gen_default_count_pct_from_max_hp");
+    new spell_gen_count_pct_from_max_hp("spell_gen_50pct_count_pct_from_max_hp", 50);
+    new spell_gen_despawn_self();
 }

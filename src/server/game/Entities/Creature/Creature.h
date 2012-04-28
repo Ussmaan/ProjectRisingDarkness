@@ -266,7 +266,6 @@ struct CreatureData
 // `creature_addon` table
 struct CreatureAddon
 {
-    uint32 guidOrEntry;
     uint32 path_id;
     uint32 mount;
     uint32 bytes1;
@@ -338,7 +337,9 @@ struct VendorItemData
 
     VendorItem* GetItem(uint32 slot) const
     {
-        if (slot >= m_items.size()) return NULL;
+        if (slot >= m_items.size())
+            return NULL;
+
         return m_items[slot];
     }
     bool Empty() const { return m_items.empty(); }
@@ -373,7 +374,7 @@ struct TrainerSpell
 {
     TrainerSpell() : spell(0), spellCost(0), reqSkill(0), reqSkillValue(0), reqLevel(0)
     {
-        for (uint8 i = 0; i < MAX_SPELL_EFFECTS ; ++i)
+        for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
             learnedSpell[i] = 0;
     }
 
@@ -506,7 +507,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapCreature
             if (isPet())
                 return false;
 
-            return GetCreatureTemplate()->rank == CREATURE_ELITE_WORLDBOSS;
+            return GetCreatureTemplate()->type_flags & CREATURE_TYPEFLAGS_BOSS;
         }
 
         bool IsDungeonBoss() const;
@@ -634,7 +635,6 @@ class Creature : public Unit, public GridObject<Creature>, public MapCreature
 
         void RemoveCorpse(bool setSpawnTime = true);
 
-        void ForcedDespawn(uint32 timeMSToDespawn = 0);
         void DespawnOrUnsummon(uint32 msTimeToDespawn = 0);
 
         time_t const& GetRespawnTime() const { return m_respawnTime; }
@@ -763,6 +763,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapCreature
         bool IsInvisibleDueToDespawn() const;
         bool CanAlwaysSee(WorldObject const* obj) const;
     private:
+        void ForcedDespawn(uint32 timeMSToDespawn = 0);
+
         //WaypointMovementGenerator vars
         uint32 m_waypointID;
         uint32 m_path_id;

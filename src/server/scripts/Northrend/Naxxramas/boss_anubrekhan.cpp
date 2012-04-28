@@ -104,7 +104,7 @@ public:
             Talk(SAY_SLAY);
         }
 
-        void JustDied(Unit*)
+        void JustDied(Unit* /*killer*/)
         {
             _JustDied();
             // start achievement timer (kill Maexna within 20 min)

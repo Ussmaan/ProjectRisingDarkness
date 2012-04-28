@@ -130,19 +130,23 @@ public:
 
         if (chr->GetTransport())
         {
-            if (!map->ToInstanceMap())
-               {
-                if(chr->GetTransport()->AddNPCPassenger(0, id, chr->GetTransOffsetX(), chr->GetTransOffsetY(), chr->GetTransOffsetZ(), chr->GetTransOffsetO()))
-                {
-                 WorldDatabase.PExecute("INSERT INTO creature_transport (guid, transport_entry, npc_entry, TransOffsetX, TransOffsetY, TransOffsetZ, TransOffsetO, emote) values (%u, %u, %u, %f, %f, %f, %f, 0)", 0, chr->GetTransport()->GetEntry(),id, chr->GetTransOffsetX(), chr->GetTransOffsetY(), chr->GetTransOffsetZ(), chr->GetTransOffsetO());
-                 return true;
-                }            
-               }
-               else
-               {
-                chr->GetTransport()->AddNPCPassengerInInstance(0, id, chr->GetTransOffsetX(), chr->GetTransOffsetY(), chr->GetTransOffsetZ(), chr->GetTransOffsetO());
-				WorldDatabase.PExecute("INSERT INTO creature_transport (guid, transport_entry, npc_entry, TransOffsetX, TransOffsetY, TransOffsetZ, TransOffsetO, emote) values (%u, %u, %u, %f, %f, %f, %f, 0)", 0, chr->GetTransport()->GetEntry(),id, chr->GetTransOffsetX(), chr->GetTransOffsetY(), chr->GetTransOffsetZ(), chr->GetTransOffsetO());
-               }
+            uint32 tguid = chr->GetTransport()->AddNPCPassenger(0, id, chr->GetTransOffsetX(), chr->GetTransOffsetY(), chr->GetTransOffsetZ(), chr->GetTransOffsetO());
+            if (tguid > 0)
+            {
+                PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_CREATURE_TRANSPORT);
+
+                stmt->setInt32(0, int32(tguid));
+                stmt->setInt32(1, int32(id));
+                stmt->setInt32(2, int32(chr->GetTransport()->GetEntry()));
+                stmt->setFloat(3, chr->GetTransOffsetX());
+                stmt->setFloat(4, chr->GetTransOffsetY());
+                stmt->setFloat(5, chr->GetTransOffsetZ());
+                stmt->setFloat(6, chr->GetTransOffsetO());
+
+                WorldDatabase.Execute(stmt);
+            }
+
+            return true;
         }
 
         Creature* creature = new Creature();
@@ -710,9 +714,16 @@ public:
             return false;
         }
 
-        if (target->GetTransport())
-            if (target->GetGUIDTransport())
-                WorldDatabase.PExecute("UPDATE creature_transport SET emote=%u WHERE transport_entry=%u AND guid=%u", emote, target->GetTransport()->GetEntry(), target->GetGUIDTransport());
+        if (target->GetTransport() && target->GetGUIDTransport())
+        {
+            PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_CREATURE_TRANSPORT_EMOTE);
+
+            stmt->setInt32(0, int32(emote));
+            stmt->setInt32(1, target->GetTransport()->GetEntry());
+            stmt->setInt32(2, target->GetGUIDTransport());
+
+            WorldDatabase.Execute(stmt);
+        }
 
         target->SetUInt32Value(UNIT_NPC_EMOTESTATE, emote);
 
@@ -1262,7 +1273,7 @@ public:
         group_member->leaderGUID     = leaderGUID;
         group_member->groupAI        = 0;
 
-        CreatureGroupMap[lowguid] = group_member;
+        sFormationMgr->CreatureGroupMap[lowguid] = group_member;
         creature->SearchFormation();
 
         PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_CREATURE_FORMATION);

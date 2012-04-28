@@ -338,7 +338,7 @@ class spell_varos_energize_core_area_enemy : public SpellScriptLoader
 
                 float orientation = CAST_AI(boss_varos::boss_varosAI, varos->AI())->GetCoreEnergizeOrientation();
 
-                for (std::list<Unit*>::iterator itr = targetList.begin() ; itr != targetList.end();)
+                for (std::list<Unit*>::iterator itr = targetList.begin(); itr != targetList.end();)
                 {
                     Position pos;
                     (*itr)->GetPosition(&pos);
@@ -385,7 +385,7 @@ class spell_varos_energize_core_area_entry : public SpellScriptLoader
 
                 float orientation = CAST_AI(boss_varos::boss_varosAI, varos->AI())->GetCoreEnergizeOrientation();
 
-                for (std::list<Unit*>::iterator itr = targetList.begin() ; itr != targetList.end();)
+                for (std::list<Unit*>::iterator itr = targetList.begin(); itr != targetList.end();)
                 {
                     Position pos;
                     (*itr)->GetPosition(&pos);

@@ -374,18 +374,20 @@ public:
     {
         npc_injured_goblinAI(Creature* creature) : npc_escortAI(creature) { }
 
-        void WaypointReached(uint32 i)
+        void WaypointReached(uint32 waypointId)
         {
             Player* player = GetPlayerForEscort();
-            switch (i)
+            if (!player)
+                return;
+
+            switch (waypointId)
             {
-            case 26:
-                DoScriptText(SAY_END_WP_REACHED, me, player);
-                break;
-            case 27:
-                if (player)
+                case 26:
+                    DoScriptText(SAY_END_WP_REACHED, me, player);
+                    break;
+                case 27:
                     player->GroupEventHappens(QUEST_BITTER_DEPARTURE, me);
-                break;
+                    break;
             }
         }
 
@@ -1230,4 +1232,7 @@ void AddSC_storm_peaks()
     new npc_dead_irongiant();
     new npc_snowblind_follower();
     new npc_exhausted_vrykul;
+    new npc_brunnhildar_prisoner();
+    new npc_icefang();
+    new npc_hyldsmeet_protodrake();
 }

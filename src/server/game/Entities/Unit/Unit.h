@@ -286,29 +286,29 @@ enum HitInfo
 {
     HITINFO_NORMALSWING         = 0x00000000,
     HITINFO_UNK1                = 0x00000001,               // req correct packet structure
-    HITINFO_NORMALSWING2        = 0x00000002,
-    HITINFO_LEFTSWING           = 0x00000004,
+    HITINFO_AFFECTS_VICTIM      = 0x00000002,
+    HITINFO_OFFHAND             = 0x00000004,
     HITINFO_UNK2                = 0x00000008,
     HITINFO_MISS                = 0x00000010,
-    HITINFO_ABSORB              = 0x00000020,               // absorbed damage
-    HITINFO_ABSORB2             = 0x00000040,               // absorbed damage
-    HITINFO_RESIST              = 0x00000080,               // resisted atleast some damage
-    HITINFO_RESIST2             = 0x00000100,               // resisted atleast some damage
+    HITINFO_FULL_ABSORB         = 0x00000020,
+    HITINFO_PARTIAL_ABSORB      = 0x00000040,
+    HITINFO_FULL_RESIST         = 0x00000080,
+    HITINFO_PARTIAL_RESIST      = 0x00000100,
     HITINFO_CRITICALHIT         = 0x00000200,               // critical hit
     // 0x00000400
     // 0x00000800
     // 0x00001000
     HITINFO_BLOCK               = 0x00002000,               // blocked damage
-    // 0x00004000
-    // 0x00008000
+    // 0x00004000                                           // Hides worldtext for 0 damage
+    // 0x00008000                                           // Related to blood visual
     HITINFO_GLANCING            = 0x00010000,
     HITINFO_CRUSHING            = 0x00020000,
-    HITINFO_NOACTION            = 0x00040000,               // guessed
+    HITINFO_NO_ANIMATION        = 0x00040000,
     // 0x00080000
     // 0x00100000
-    HITINFO_SWINGNOHITSOUND     = 0x00200000,               // guessed
+    HITINFO_SWINGNOHITSOUND     = 0x00200000,               // unused?
     // 0x00400000
-    HITINFO_UNK3                = 0x00800000
+    HITINFO_RAGE_GAIN           = 0x00800000
 };
 
 //i would like to remove this: (it is defined in item.h
@@ -701,14 +701,17 @@ enum MovementFlags
     // TODO: Check if PITCH_UP and PITCH_DOWN really belong here..
     MOVEMENTFLAG_MASK_MOVING =
         MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT |
-        MOVEMENTFLAG_PITCH_UP | MOVEMENTFLAG_PITCH_DOWN | MOVEMENTFLAG_FALLING | MOVEMENTFLAG_FALLING | MOVEMENTFLAG_ASCENDING | MOVEMENTFLAG_DESCENDING |
+        MOVEMENTFLAG_PITCH_UP | MOVEMENTFLAG_PITCH_DOWN | MOVEMENTFLAG_FALLING | MOVEMENTFLAG_FALLING_FAR | MOVEMENTFLAG_ASCENDING | MOVEMENTFLAG_DESCENDING |
         MOVEMENTFLAG_SPLINE_ELEVATION,
 
     MOVEMENTFLAG_MASK_TURNING =
         MOVEMENTFLAG_LEFT | MOVEMENTFLAG_RIGHT,
 
+    MOVEMENTFLAG_MASK_MOVING_FLY =
+        MOVEMENTFLAG_FLYING | MOVEMENTFLAG_ASCENDING | MOVEMENTFLAG_DESCENDING,
+
     //! TODO if needed: add more flags to this masks that are exclusive to players
-    MOVEMENTFLAG_MASK_PLAYER_ONLY = 
+    MOVEMENTFLAG_MASK_PLAYER_ONLY =
         MOVEMENTFLAG_FLYING,
 };
 enum MovementFlags2
@@ -1236,7 +1239,7 @@ class Unit : public WorldObject
 
         typedef std::map<uint8, AuraApplication*> VisibleAuraMap;
 
-        virtual ~Unit ();
+        virtual ~Unit();
 
         UnitAI* GetAI() { return i_AI; }
         void SetAI(UnitAI* newAI) { i_AI = newAI; }
@@ -1336,7 +1339,7 @@ class Unit : public WorldObject
 
         float GetStat(Stats stat) const { return float(GetUInt32Value(UNIT_FIELD_STAT0+stat)); }
         void SetStat(Stats stat, int32 val) { SetStatInt32Value(UNIT_FIELD_STAT0+stat, val); }
-        uint32 GetArmor() const { return GetResistance(SPELL_SCHOOL_NORMAL) ; }
+        uint32 GetArmor() const { return GetResistance(SPELL_SCHOOL_NORMAL); }
         void SetArmor(int32 val) { SetResistance(SPELL_SCHOOL_NORMAL, val); }
 
         uint32 GetResistance(SpellSchools school) const { return GetUInt32Value(UNIT_FIELD_RESISTANCES+school); }
@@ -1398,9 +1401,7 @@ class Unit : public WorldObject
         bool IsNeutralToAll() const;
         bool IsInPartyWith(Unit const* unit) const;
         bool IsInRaidWith(Unit const* unit) const;
-        void GetPartyMemberInDist(std::list<Unit*> &units, float dist);
         void GetPartyMembers(std::list<Unit*> &units);
-        void GetRaidMember(std::list<Unit*> &units, float dist);
         bool IsContestedGuard() const
         {
             if (FactionTemplateEntry const* entry = getFactionTemplateEntry())
@@ -1579,6 +1580,7 @@ class Unit : public WorldObject
 
         virtual bool IsInWater() const;
         virtual bool IsUnderWater() const;
+        virtual void UpdateUnderwaterState(Map* m, float x, float y, float z);
         bool isInAccessiblePlaceFor(Creature const* c) const;
 
         void SendHealSpellLog(Unit* victim, uint32 SpellID, uint32 Damage, uint32 OverHeal, uint32 Absorb, bool critical = false);
@@ -1635,7 +1637,7 @@ class Unit : public WorldObject
         /*! These methods send the same packet to the client in apply and unapply case.
             The client-side interpretation of this packet depends on the presence of relevant movementflags
             which are sent with movementinfo. Furthermore, these packets are broadcast to nearby players as well
-            as the current unit. 
+            as the current unit.
         */
         void SendMovementHover();
         void SendMovementFeatherFall();
@@ -1646,7 +1648,7 @@ class Unit : public WorldObject
         bool IsLevitating() const { return m_movementInfo.HasMovementFlag(MOVEMENTFLAG_DISABLE_GRAVITY);}
         bool IsWalking() const { return m_movementInfo.HasMovementFlag(MOVEMENTFLAG_WALKING);}
         virtual bool SetWalk(bool enable);
-        virtual bool SetDisableGravity(bool disable);
+        virtual bool SetDisableGravity(bool disable, bool packetOnly = false);
         bool SetHover(bool enable);
 
         void SetInFront(Unit const* target);
@@ -2028,7 +2030,7 @@ class Unit : public WorldObject
         float GetAPMultiplier(WeaponAttackType attType, bool normalized);
         void ModifyAuraState(AuraStateType flag, bool apply);
         uint32 BuildAuraStateUpdateForTarget(Unit* target) const;
-        bool HasAuraState(AuraStateType flag, SpellInfo const* spellProto = NULL, Unit const* Caster = NULL) const ;
+        bool HasAuraState(AuraStateType flag, SpellInfo const* spellProto = NULL, Unit const* Caster = NULL) const;
         void UnsummonAllTotems();
         Unit* GetMagicHitRedirectTarget(Unit* victim, SpellInfo const* spellInfo);
         Unit* GetMeleeHitRedirectTarget(Unit* victim, SpellInfo const* spellInfo = NULL);
@@ -2318,6 +2320,7 @@ class Unit : public WorldObject
         Vehicle* m_vehicleKit;
 
         uint32 m_unitTypeMask;
+        LiquidTypeEntry const* _lastLiquid;
 
         bool IsAlwaysVisibleFor(WorldObject const* seer) const;
         bool IsAlwaysDetectableFor(WorldObject const* seer) const;

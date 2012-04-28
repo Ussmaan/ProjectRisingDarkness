@@ -262,7 +262,7 @@ class ValithriaDespawner : public BasicEvent
 
             if (CreatureData const* data = creature->GetCreatureData())
                 creature->SetPosition(data->posX, data->posY, data->posZ, data->orientation);
-            creature->ForcedDespawn();
+            creature->DespawnOrUnsummon();
 
             creature->SetCorpseDelay(corpseDelay);
             creature->SetRespawnDelay(respawnDelay);
@@ -1087,7 +1087,7 @@ class npc_dream_cloud : public CreatureScript
                             me->GetMotionMaster()->MoveIdle();
                             // must use originalCaster the same for all clouds to allow stacking
                             me->CastSpell(me, EMERALD_VIGOR, false, NULL, NULL, _instance->GetData64(DATA_VALITHRIA_DREAMWALKER));
-                            me->ForcedDespawn(100);
+                            me->DespawnOrUnsummon(100);
                             break;
                         default:
                             break;
@@ -1196,7 +1196,7 @@ class spell_dreamwalker_summoner : public SpellScriptLoader
                 if (targets.empty())
                     return;
 
-                Unit* target = SelectRandomContainerElement(targets);
+                Unit* target = Trinity::Containers::SelectRandomContainerElement(targets);
                 targets.clear();
                 targets.push_back(target);
             }
@@ -1242,7 +1242,7 @@ class spell_dreamwalker_summon_suppresser : public SpellScriptLoader
                 std::list<Creature*> summoners;
                 GetCreatureListWithEntryInGrid(summoners, caster, NPC_WORLD_TRIGGER, 100.0f);
                 summoners.remove_if (Trinity::UnitAuraCheck(true, SPELL_RECENTLY_SPAWNED));
-                Trinity::RandomResizeList(summoners, 2);
+                Trinity::Containers::RandomResizeList(summoners, 2);
                 if (summoners.empty())
                     return;
 

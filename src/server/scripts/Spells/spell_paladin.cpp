@@ -285,9 +285,19 @@ class spell_pal_holy_shock : public SpellScriptLoader
                 }
             }
 
+            SpellCastResult CheckCast()
+            {
+                Player* caster = GetCaster()->ToPlayer();
+                if (Unit* target = GetExplTargetUnit())
+                    if (!caster->IsFriendlyTo(target) && !caster->IsValidAttackTarget(target))
+                        return SPELL_FAILED_BAD_TARGETS;
+                return SPELL_CAST_OK;
+            }
+
             void Register()
             {
                 // add dummy effect spell handler to Holy Shock
+                OnCheckCast += SpellCheckCastFn(spell_pal_holy_shock_SpellScript::CheckCast);
                 OnEffectHitTarget += SpellEffectFn(spell_pal_holy_shock_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
             }
         };

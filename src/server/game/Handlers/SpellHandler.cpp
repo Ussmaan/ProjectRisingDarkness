@@ -173,12 +173,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
     }
 }
 
-#define OPEN_CHEST 11437
-#define OPEN_SAFE 11535
-#define OPEN_CAGE 11792
-#define OPEN_BOOTY_CHEST 5107
-#define OPEN_STRONGBOX 8517
-
 void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
 {
     sLog->outDetail("WORLD: CMSG_OPEN_ITEM packet, data length = %i", (uint32)recvPacket.size());
@@ -241,7 +235,12 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
 
     if (item->HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_WRAPPED))// wrapped?
     {
-        QueryResult result = CharacterDatabase.PQuery("SELECT entry, flags FROM character_gifts WHERE item_guid = '%u'", item->GetGUIDLow());
+        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHARACTER_GIFT_BY_ITEM);
+
+        stmt->setUInt32(0, item->GetGUIDLow());
+
+        PreparedQueryResult result = CharacterDatabase.Query(stmt);
+
         if (result)
         {
             Field* fields = result->Fetch();
@@ -260,7 +259,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
             return;
         }
 
-        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_GIFT);
+        stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_GIFT);
 
         stmt->setUInt32(0, item->GetGUIDLow());
 

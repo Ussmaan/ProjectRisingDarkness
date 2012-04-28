@@ -128,7 +128,7 @@ public:
             summon->AI()->DoZoneInCombat();
         }
 
-        void JustDied(Unit* /*Killer*/)
+        void JustDied(Unit* /*killer*/)
         {
             _JustDied();
             Talk(SAY_DEATH);

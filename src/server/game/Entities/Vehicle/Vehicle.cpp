@@ -285,9 +285,6 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion, uint8 typ
         //    return;         // Something went wrong in the spellsystem
         //}
 
-        // This is not good, we have to send update twice
-        accessory->SendMovementFlagUpdate();
-
         if (GetBase()->GetTypeId() == TYPEID_UNIT)
             sScriptMgr->OnInstallAccessory(this, accessory);
     }
@@ -352,6 +349,7 @@ bool Vehicle::AddPassenger(Unit* unit, int8 seatId)
     unit->m_movementInfo.t_pos.m_orientation = 0;
     unit->m_movementInfo.t_time = 0; // 1 for player
     unit->m_movementInfo.t_seat = seat->first;
+    unit->m_movementInfo.t_guid = _me->GetGUID();
 
     if (_me->GetTypeId() == TYPEID_UNIT
         && unit->GetTypeId() == TYPEID_PLAYER
@@ -453,11 +451,12 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 
 void Vehicle::Dismiss()
 {
+    if (GetBase()->GetTypeId() != TYPEID_UNIT)
+        return;
+
     sLog->outDebug(LOG_FILTER_VEHICLES, "Vehicle::Dismiss Entry: %u, GuidLow %u", _creatureEntry, _me->GetGUIDLow());
     Uninstall();
-    _me->DestroyForNearbyPlayers();
-    _me->CombatStop();
-    _me->AddObjectToRemoveList();
+    GetBase()->ToCreature()->DespawnOrUnsummon();
 }
 
 void Vehicle::InitMovementInfoForBase()

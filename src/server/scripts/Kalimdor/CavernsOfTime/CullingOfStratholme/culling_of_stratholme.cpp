@@ -480,9 +480,9 @@ public:
             instance->SetData(DATA_ARTHAS_STEP, uiStep);
         }
 
-        void WaypointReached(uint32 uiPointId)
+        void WaypointReached(uint32 waypointId)
         {
-            switch (uiPointId)
+            switch (waypointId)
             {
                 case 0:
                 case 1:

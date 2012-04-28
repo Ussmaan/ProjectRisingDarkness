@@ -149,7 +149,7 @@ public:
             Talk(SAY_TKILL);
         }
 
-        void JustDied(Unit* /*Killer*/)
+        void JustDied(Unit* /*killer*/)
         {
             _JustDied();
             Talk(SAY_TDEATH);

@@ -774,7 +774,7 @@ class npc_simon_bunny : public CreatureScript
                 colorSequence.clear();
                 playableSequence.clear();
                 playerSequence.clear();
-                me->SetFloatValue(OBJECT_FIELD_SCALE_X, large ? 2 : 1);
+                me->SetFloatValue(OBJECT_FIELD_SCALE_X, large ? 2.0f : 1.0f);
 
                 std::list<WorldObject*> ClusterList;
                 Trinity::AllWorldObjectsInRange objects(me, searchDistance);
@@ -855,7 +855,7 @@ class npc_simon_bunny : public CreatureScript
                 if (GameObject* relic = me->FindNearestGameObject(large ? GO_APEXIS_MONUMENT : GO_APEXIS_RELIC, searchDistance))
                     relic->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
 
-                me->ForcedDespawn(1000);
+                me->DespawnOrUnsummon(1000);
             }
 
             /*

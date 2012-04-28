@@ -206,7 +206,7 @@ class boss_razorscale_controller : public CreatureScript
                 }
             }
 
-            void JustDied(Unit* /*who*/)
+            void JustDied(Unit* /*killer*/)
             {
                 _JustDied();
             }
@@ -368,7 +368,7 @@ class boss_razorscale : public CreatureScript
                 events.ScheduleEvent(EVENT_FLIGHT, 0, 0, PHASE_GROUND);
             }
 
-            void JustDied(Unit* /*who*/)
+            void JustDied(Unit* /*killer*/)
             {
                 _JustDied();
                 if (Creature* controller = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(DATA_RAZORSCALE_CONTROL) : 0))
@@ -1021,7 +1021,7 @@ class spell_razorscale_devouring_flame : public SpellScriptLoader
                 PreventHitDefaultEffect(effIndex);
                 Unit* caster = GetCaster();
                 uint32 entry = uint32(GetSpellInfo()->Effects[effIndex].MiscValue);
-                WorldLocation const* summonLocation = GetTargetDest();
+                WorldLocation const* summonLocation = GetExplTargetDest();
                 if (!caster || !summonLocation)
                     return;
 

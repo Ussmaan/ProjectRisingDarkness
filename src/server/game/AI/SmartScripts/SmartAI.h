@@ -174,7 +174,7 @@ class SmartAI : public CreatureAI
 
         void SetSwim(bool swim = true);
 
-        void SetInvinceabilityHpLevel(uint32 level) { mInvinceabilityHpLevel = level; }
+        void SetInvincibilityHpLevel(uint32 level) { mInvincibilityHpLevel = level; }
 
         void sGossipHello(Player* player);
         void sGossipSelect(Player* player, uint32 sender, uint32 action);
@@ -223,7 +223,7 @@ class SmartAI : public CreatureAI
         bool mCanAutoAttack;
         bool mCanCombatMove;
         bool mForcedPaused;
-        uint32 mInvinceabilityHpLevel;
+        uint32 mInvincibilityHpLevel;
 
         bool AssistPlayerInCombat(Unit* who);
 
@@ -239,13 +239,13 @@ public:
     SmartGameObjectAI(GameObject* g) : GameObjectAI(g), go(g) {}
     ~SmartGameObjectAI() {}
 
-    void UpdateAI(const uint32 diff);
+    void UpdateAI(uint32 diff);
     void InitializeAI();
     void Reset();
     SmartScript* GetScript() { return &mScript; }
     static int Permissible(const GameObject* g);
 
-    bool GossipHello(Player* player) ;
+    bool GossipHello(Player* player);
     bool GossipSelect(Player* player, uint32 sender, uint32 action);
     bool GossipSelectCode(Player* /*player*/, uint32 /*sender*/, uint32 /*action*/, const char* /*code*/);
     bool QuestAccept(Player* player, Quest const* quest);

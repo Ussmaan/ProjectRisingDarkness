@@ -37,6 +37,11 @@ BattlegroundSA::BattlegroundSA()
     SignaledRoundTwo = false;
     SignaledRoundTwoHalfMin = false;
     InitSecondRound = false;
+
+    //! This is here to prevent an uninitialised variable warning
+    //! The warning only occurs when SetUpBattleGround fails though.
+    //! In the future this function should be called BEFORE sending initial worldstates.
+    memset(&GraveyardStatus, 0, sizeof(GraveyardStatus));
 }
 
 BattlegroundSA::~BattlegroundSA()
@@ -529,16 +534,16 @@ void BattlegroundSA::EventPlayerDamagedGO(Player* /*player*/, GameObject* go, ui
 
     if (eventType == go->GetGOInfo()->building.damagedEvent)
     {
-        uint32 i = GetGateIDFromDestroyEventID(eventType);
+        uint32 i = getGateIdFromDamagedOrDestroyEventId(eventType);
         GateStatus[i] = BG_SA_GATE_DAMAGED;
-        uint32 uws = GetWorldStateFromGateID(i);
+        uint32 uws = getWorldStateFromGateId(i);
         if (uws)
             UpdateWorldState(uws, GateStatus[i]);
     }
 
     if (eventType == go->GetGOInfo()->building.destroyedEvent)
     {
-        if (go->GetGOInfo()->building.destroyedEvent == 19837)
+        if (go->GetGOInfo()->building.destroyedEvent == BG_SA_EVENT_ANCIENT_GATE_DESTROYED)
             SendWarningToAll(LANG_BG_SA_CHAMBER_BREACHED);
         else
             SendWarningToAll(LANG_BG_SA_WAS_DESTROYED, go->GetGOInfo()->name.c_str());
@@ -598,7 +603,7 @@ void BattlegroundSA::DemolisherStartState(bool start)
 
 void BattlegroundSA::DestroyGate(Player* player, GameObject* go)
 {
-    uint32 i = GetGateIDFromDestroyEventID(go->GetGOInfo()->building.destroyedEvent);
+    uint32 i = getGateIdFromDamagedOrDestroyEventId(go->GetGOInfo()->building.destroyedEvent);
     if (!GateStatus[i])
         return;
 
@@ -607,7 +612,7 @@ void BattlegroundSA::DestroyGate(Player* player, GameObject* go)
         if (g->GetGOValue()->Building.Health == 0)
         {
             GateStatus[i] = BG_SA_GATE_DESTROYED;
-            uint32 uws = GetWorldStateFromGateID(i);
+            uint32 uws = getWorldStateFromGateId(i);
             if (uws)
                 UpdateWorldState(uws, GateStatus[i]);
             bool rewardHonor = true;

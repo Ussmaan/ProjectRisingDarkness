@@ -554,7 +554,8 @@ class boss_the_lich_king : public CreatureScript
                 if (Creature* tirion = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_HIGHLORD_TIRION_FORDRING)))
                     tirion->AI()->EnterEvadeMode();
                 DoCastAOE(SPELL_KILL_FROSTMOURNE_PLAYERS);
-                summons.DoAction(NPC_STRANGULATE_VEHICLE, ACTION_TELEPORT_BACK);
+                EntryCheckPredicate pred(NPC_STRANGULATE_VEHICLE);
+                summons.DoAction(ACTION_TELEPORT_BACK, pred);
             }
 
             void KilledUnit(Unit* victim)
@@ -595,12 +596,15 @@ class boss_the_lich_king : public CreatureScript
                         events.ScheduleEvent(EVENT_OUTRO_TALK_8, 17000, 0, PHASE_OUTRO);
                         break;
                     case ACTION_TELEPORT_BACK:
-                        summons.DoAction(NPC_STRANGULATE_VEHICLE, ACTION_TELEPORT_BACK);
+                    {
+                        EntryCheckPredicate pred(NPC_STRANGULATE_VEHICLE);
+                        summons.DoAction(ACTION_TELEPORT_BACK, pred);
                         if (!IsHeroic())
                             Talk(SAY_LK_FROSTMOURNE_ESCAPE);
                         else
                             DoCastAOE(SPELL_TRIGGER_VILE_SPIRIT_HEROIC);
                         break;
+                    }
                     default:
                         break;
                 }
@@ -2467,7 +2471,7 @@ class spell_the_lich_king_summon_into_air : public SpellScriptLoader
             void ModDestHeight(SpellEffIndex effIndex)
             {
                 static Position const offset = {0.0f, 0.0f, 15.0f, 0.0f};
-                WorldLocation* dest = const_cast<WorldLocation*>(GetTargetDest());
+                WorldLocation* dest = const_cast<WorldLocation*>(GetExplTargetDest());
                 dest->RelocateOffset(offset);
                 // spirit bombs get higher
                 if (GetSpellInfo()->Effects[effIndex].MiscValue == NPC_SPIRIT_BOMB)
@@ -2551,7 +2555,7 @@ class spell_the_lich_king_valkyr_target_search : public SpellScriptLoader
                 if (unitList.empty())
                     return;
 
-                _target = SelectRandomContainerElement(unitList);
+                _target = Trinity::Containers::SelectRandomContainerElement(unitList);
                 unitList.clear();
                 unitList.push_back(_target);
                 GetCaster()->GetAI()->SetGUID(_target->GetGUID());
@@ -2724,7 +2728,7 @@ class spell_the_lich_king_vile_spirits_visual : public SpellScriptLoader
             void ModDestHeight(SpellEffIndex /*effIndex*/)
             {
                 Position offset = {0.0f, 0.0f, 15.0f, 0.0f};
-                const_cast<WorldLocation*>(GetTargetDest())->RelocateOffset(offset);
+                const_cast<WorldLocation*>(GetExplTargetDest())->RelocateOffset(offset);
             }
 
             void Register()
@@ -2759,7 +2763,7 @@ class spell_the_lich_king_vile_spirit_move_target_search : public SpellScriptLoa
                 if (targets.empty())
                     return;
 
-                _target = SelectRandomContainerElement(targets);
+                _target = Trinity::Containers::SelectRandomContainerElement(targets);
             }
 
             void HandleScript(SpellEffIndex effIndex)
