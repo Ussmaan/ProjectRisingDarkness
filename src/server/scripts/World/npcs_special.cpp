@@ -2643,6 +2643,14 @@ public:
                 player->CLOSE_GOSSIP_MENU();
                 player->CastSpell(player, SPELL_VIOLET_HOLD_KEY, false);
                 break;
+            case GOSSIP_ACTION_INFO_DEF + 8:
+                player->CLOSE_GOSSIP_MENU();
+                player->AddItem(ITEM_KEY_TO_THE_FOCUSING_IRIS,1);
+                break;
+            case GOSSIP_ACTION_INFO_DEF + 9:
+                player->CLOSE_GOSSIP_MENU();
+                player->AddItem(ITEM_HC_KEY_TO_THE_FOCUSING_IRIS,1);
+                break;
         }
         return true;
     }
@@ -2809,14 +2817,6 @@ public:
             case GOSSIP_ACTION_INFO_DEF + 5:
                 player->CLOSE_GOSSIP_MENU();
                 player->CastSpell(player, SPELL_ESSENCE_INFUSED_MOONSTONE, false);
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 8:
-                player->CLOSE_GOSSIP_MENU();
-                player->AddItem(ITEM_KEY_TO_THE_FOCUSING_IRIS,1);
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 9:
-                player->CLOSE_GOSSIP_MENU();
-                player->AddItem(ITEM_HC_KEY_TO_THE_FOCUSING_IRIS,1);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 8:
                 player->CLOSE_GOSSIP_MENU();
@@ -4211,7 +4211,8 @@ public:
                 PostionEventoHallowends[AreaFire + j].AlreadyFired = false;
             for (uint8 i = 0; i < 2; i++)
                 SaidPhrase[i] = false;
-            Fires.DoAction(NPC_HEADLESS_HORSEMAN_FIRE_DND,ACTION_START_EVENT);
+            EntryCheckPredicate pred(NPC_HEADLESS_HORSEMAN_FIRE_DND);
+            Fires.DoAction(ACTION_START_EVENT, pred);
             Creature *summon = me->SummonCreature(NPC_SHADE_OF_THE_HORSEMAN,0,0,0)->ToCreature();
             if (summon) 
                 Fires.Summon(summon);
@@ -4221,13 +4222,16 @@ public:
         {
             if (!EventPassed) 
             {
-                Fires.DoAction(NPC_HEADLESS_HORSEMAN_FIRE_DND,ACTION_FAIL_EVENT);
-                Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_FAIL_EVENT);
+                EntryCheckPredicate pred(NPC_HEADLESS_HORSEMAN_FIRE_DND);
+            	Fires.DoAction(ACTION_FAIL_EVENT, pred);
+                EntryCheckPredicate pred(NPC_SHADE_OF_THE_HORSEMAN);
+            	Fires.DoAction(ACTION_FAIL_EVENT, pred);
             }
             else 
             {
                 EventComplete(100.0f);
-                Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_PASS_EVENT);
+                EntryCheckPredicate pred(NPC_SHADE_OF_THE_HORSEMAN);
+            	Fires.DoAction(ACTION_PASS_EVENT, pred);
             }
             EventProgress = false;
         }
@@ -4248,7 +4252,8 @@ public:
                 if (!SaidPhrase[0])
                     if (TimerDuration <= 280*IN_MILLISECONDS)
                     {
-                        Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_SAY_1);
+                        EntryCheckPredicate pred(NPC_SHADE_OF_THE_HORSEMAN);
+            		Fires.DoAction(ACTION_SAY_1, pred);
                         SaidPhrase[0] = true;
                     } else 
                         TimerDuration -= diff;
@@ -4256,7 +4261,8 @@ public:
                     if (!SaidPhrase[1])
                         if (TimerDuration <= 130*IN_MILLISECONDS)
                         {
-                            Fires.DoAction(NPC_SHADE_OF_THE_HORSEMAN,ACTION_SAY_2);
+                            EntryCheckPredicate pred(NPC_SHADE_OF_THE_HORSEMAN);
+            		    Fires.DoAction(ACTION_SAY_2, pred);
                             SaidPhrase[1] = true;
                         } else 
                             TimerDuration -= diff;
