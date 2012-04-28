@@ -3414,10 +3414,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 // that will be clear if we get more spells with problem like this
                 spellInfo->AttributesEx |= SPELL_ATTR1_DISPEL_AURAS_ON_IMMUNITY;
                 break;
-            case 62311: // Algalon - Cosmic Smash
-            case 64596: // Algalon - Cosmic Smash
-                spellInfo->rangeIndex = 13;
-                break;
             case 61915: // Lightning Whirl (Brundir)
             case 63483: // Lightning Whirl (Brundir)
                 spellInfo->InterruptFlags |= SPELL_INTERRUPT_FLAG_INTERRUPT;
