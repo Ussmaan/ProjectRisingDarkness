@@ -835,7 +835,7 @@ class boss_algalon : public CreatureScript
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-
+		EntryCheckPredicate pred(CREATURE_BLACK_HOLE); 
                     switch (events.GetEvent())
                     {
                     case 0:
@@ -887,7 +887,7 @@ class boss_algalon : public CreatureScript
                         events.RepeatEvent(50000);
                         break;
                     case EVENT_SUMMON_UNLEASHED_DARK_MATTER:
-                        EntryCheckPredicate pred(CREATURE_BLACK_HOLE);
+                         
               		summons.DoAction(ACTION_BLACKHOLE_SUMMON, pred); 
                         events.RepeatEvent(30000);
                         break;
