@@ -433,7 +433,7 @@ void AddSC_boss_general_vezax();
 void AddSC_ulduar_teleporter();
 void AddSC_boss_hodir();
 void AddSC_ulduar();
-void AddSC_boss_algalon_the_observer();
+void AddSC_boss_algalon();  
 void AddSC_instance_ulduar();
 void AddSC_boss_yoggsaron();
 void AddSC_boss_keleseth();              //Utgarde Keep
@@ -1152,7 +1152,7 @@ void AddNorthrendScripts()
     AddSC_boss_hodir();
     AddSC_ulduar_teleporter();
     AddSC_ulduar();
-    AddSC_boss_algalon_the_observer();
+    AddSC_boss_algalon(); 
     AddSC_instance_ulduar();
     AddSC_boss_yoggsaron();
     AddSC_boss_keleseth();              //Utgarde Keep
