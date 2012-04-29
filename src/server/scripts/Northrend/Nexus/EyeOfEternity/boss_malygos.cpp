@@ -251,7 +251,7 @@ class boss_malygos : public CreatureScript
                         summon->SetInCombatWithZone();
                         summon->AddUnitState(UNIT_STATE_ROOT);
                         summon->SetReactState(REACT_PASSIVE);
-                        summon->ForcedDespawn(30*IN_MILLISECONDS);
+                        summon->DespawnOrUnsummon(30*IN_MILLISECONDS);
                         summon->CastSpell(summon, SPELL_STATIC_FIELD, true);
                         break;
                 }
@@ -331,7 +331,7 @@ class boss_malygos : public CreatureScript
                         me->GetMotionMaster()->MoveLand(POINT_START, Locations[0], 12.0f);
 
                         while (Creature* dragon = me->FindNearestCreature(NPC_WYRMREST_SKYTALON, 250.0f))
-                            dragon->ForcedDespawn();
+                            dragon->DespawnOrUnsummon();
 
                         break;
                     }
@@ -519,7 +519,7 @@ class boss_malygos : public CreatureScript
                                 return;
 
                             // randomize and resize
-                            Trinity::RandomResizeList<Unit*>(targetList, 3);
+                            Trinity::Containers::RandomResizeList<Unit*>(targetList, 3);
 
                             targetCount = 0;
                             // store guids and notify players
@@ -560,7 +560,7 @@ class boss_malygos : public CreatureScript
                                     for (std::list<std::pair<uint64, uint64> >::iterator iter = mounts.begin(); iter != mounts.end(); ++iter)
                                         if (player->GetGUID() == (*iter).second)
                                             if (Creature* mount = Unit::GetCreature(*me, (*iter).first))
-                                                mount->ForcedDespawn(1*IN_MILLISECONDS);
+                                                mount->DespawnOrUnsummon(1*IN_MILLISECONDS);
                                 }
                             }
                         }
@@ -1075,7 +1075,7 @@ class npc_alexstrasza : public CreatureScript
                                     {
                                         player->ExitVehicle();
                                         player->JumpTo(me, 10.0f);
-                                        mount->ToCreature()->ForcedDespawn(1*IN_MILLISECONDS);
+                                        mount->ToCreature()->DespawnOrUnsummon(1*IN_MILLISECONDS);
                                         me->CastSpell(player, VEHICLE_SPELL_PARACHUTE, true);
                                     }
                                 }
@@ -1209,7 +1209,7 @@ class npc_power_spark : public CreatureScript
                     me->SetReactState(REACT_PASSIVE);
                     me->GetMotionMaster()->Clear();
                     me->GetMotionMaster()->MoveFall();
-                    me->ForcedDespawn(60*IN_MILLISECONDS);
+                    me->DespawnOrUnsummon(60*IN_MILLISECONDS);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                 }
             }
@@ -1310,7 +1310,7 @@ class npc_hover_disc : public CreatureScript
             void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
             {
                 if (!apply)
-                    me->ForcedDespawn(1*IN_MILLISECONDS);
+                    me->DespawnOrUnsummon(1*IN_MILLISECONDS);
             }
 
             void SetData(uint32 /*type*/, uint32 data)
