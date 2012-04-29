@@ -412,7 +412,8 @@ class boss_algalon : public CreatureScript
 
             void SummonLivingConstellations()
             {
-                summons.DoAction(CREATURE_LIVING_CONSTELLATION, ACTION_ACTIVATE_CONSTELLATION);
+                EntryCheckPredicate pred1(CREATURE_LIVING_CONSTELLATION);
+              	summons.DoAction(ACTION_ACTIVATE_CONSTELLATION, pred1);
             }
 
             void PopulateBlackHoles()
@@ -887,6 +888,8 @@ class boss_algalon : public CreatureScript
                         break;
                     case EVENT_SUMMON_UNLEASHED_DARK_MATTER:
                         summons.DoAction(CREATURE_BLACK_HOLE, ACTION_BLACKHOLE_SUMMON);
+                        EntryCheckPredicate pred(CREATURE_BLACK_HOLE);
+              		summons.DoAction(ACTION_BLACKHOLE_SUMMON, pred);
                         events.RepeatEvent(30000);
                         break;
                     default:
@@ -1394,7 +1397,7 @@ class spell_algalon_cosmic_smash_initial : public SpellScriptLoader
                 uint32 maxTargets = 1;
                 if (GetSpellInfo()->Id == H_SPELL_COSMIC_SMASH)
                     maxTargets = 3;
-                Trinity::RandomResizeList(unitList, maxTargets);
+                Trinity::Containers::RandomResizeList(unitList, maxTargets);
 
                 m_unitList = unitList;
             }
@@ -1549,7 +1552,7 @@ class spell_algalon_cosmic_smash_damage : public SpellScriptLoader
 
             void CalcDamage(SpellEffIndex /*effIndex*/)
             {
-                float distance = GetHitUnit()->GetExactDist2d(GetTargetDest());
+                float distance = GetHitUnit()->GetExactDist2d(GetExplTargetDest());                 
                 if (distance < 6.0f)
                     return;
 
