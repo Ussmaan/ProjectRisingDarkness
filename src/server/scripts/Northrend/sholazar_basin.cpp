@@ -125,6 +125,7 @@ public:
                 if (player->GetQuestStatus(QUEST_FORTUNATE_MISUNDERSTANDINGS) != QUEST_STATUS_COMPLETE)
                     player->FailQuest(QUEST_FORTUNATE_MISUNDERSTANDINGS);
             }
+	}
     };
 
     bool OnGossipHello(Player* player, Creature* creature)
