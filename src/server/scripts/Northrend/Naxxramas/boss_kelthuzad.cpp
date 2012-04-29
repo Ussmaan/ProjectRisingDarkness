@@ -444,10 +444,10 @@ public:
                     if (HealthBelowPct(45))
                     {
                         Phase = 3;
-                        DoScriptText(SAY_REQUEST_AID, me);
+                        DoScriptText(SAY_AID, me);
                         //here Lich King should respond to KelThuzad but I don't know which Creature to make talk
                         //so for now just make Kelthuzad says it.
-                        DoScriptText(SAY_ANSWER_REQUEST, me);
+                        DoScriptText(SAY_ANSWER, me);
 
                         for (uint8 i = 0; i <= 3; ++i)
                         {
@@ -657,7 +657,7 @@ public:
             return false;
 
         InstanceScript* instance = player->GetInstanceScript();
-        if (!instance || instance->IsEncounterInProgress() || instance->GetBossState(BOSS_KELTHUZAD) == DONE)
+        if (!instance || instance->IsEncounterInProgress() || instance->GetBossState(DATA_KELTHUZAD) == DONE)
             return false;
 
         Creature* pKelthuzad = Unit::GetCreature(*player, instance->GetData64(DATA_KELTHUZAD));
