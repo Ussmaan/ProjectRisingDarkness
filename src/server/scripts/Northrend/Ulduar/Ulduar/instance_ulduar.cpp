@@ -36,6 +36,7 @@ class instance_ulduar : public InstanceMapScript
         {
             instance_ulduar_InstanceMapScript(InstanceMap* map) : InstanceScript(map) { }
 
+            uint32 Encounter[MAX_ENCOUNTER];
             std::string m_strInstData;
             std::list<uint64> MimironDoorGUIDList;
             std::set<uint64> mRubbleSpawns;
@@ -104,12 +105,6 @@ class instance_ulduar : public InstanceMapScript
             uint64 ArchivumDoorGUID;
             uint64 XT002DoorGUID;
             uint64 IronCouncilEntranceGUID;
-            uint64 AlgalonSigilDoorGUID[3];
-            uint64 AlgalonFloorGUID[2];
-            uint64 AlgalonUniverseGUID;
-            uint64 AlgalonTrapdoorGUID;
-            uint64 BrannBronzebeardAlgGUID;
-            uint64 GiftOfTheObserverGUID;
 
             // Miscellaneous
             uint64 WayToYoggGUID;
@@ -173,13 +168,6 @@ class instance_ulduar : public InstanceMapScript
                 HodirStoneDoorGUID               = 0;
                 ArchivumDoorGUID                 = 0;
                 IronCouncilEntranceGUID          = 0;
-                AlgalonUniverseGUID              = 0;
-                AlgalonTrapdoorGUID              = 0;
-                BrannBronzebeardAlgGUID          = 0;
-                GiftOfTheObserverGUID            = 0;
-                _algalonTimer                    = 61;
-                _maxArmorItemLevel               = 0;
-                _maxWeaponItemLevel              = 0;
                 TeamInInstance                   = 0;
                 HodirRareCacheData               = 0;
                 WayToYoggGUID                    = 0;
@@ -187,10 +175,8 @@ class instance_ulduar : public InstanceMapScript
                 elderCount                       = 0;
                 conSpeedAtory                    = false;
                 Unbroken                         = true;
-                _summonAlgalon                   = false;
 
-                memset(AlgalonSigilDoorGUID, 0, sizeof(AlgalonSigilDoorGUID));
-                memset(AlgalonFloorGUID, 0, sizeof(AlgalonFloorGUID));
+                memset(Encounter, 0, sizeof(Encounter));
                 memset(XTToyPileGUIDs, 0, sizeof(XTToyPileGUIDs));
                 memset(AssemblyGUIDs, 0, sizeof(AssemblyGUIDs));
                 memset(RazorHarpoonGUIDs, 0, sizeof(RazorHarpoonGUIDs));
@@ -313,8 +299,13 @@ class instance_ulduar : public InstanceMapScript
 			
             bool IsEncounterInProgress() const
             {
-                packet << uint32(WORLD_STATE_ALGALON_TIMER_ENABLED) << uint32(_algalonTimer && _algalonTimer <= 60);
-                packet << uint32(WORLD_STATE_ALGALON_DESPAWN_TIMER) << uint32(std::min<uint32>(_algalonTimer, 60));
+                for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
+                {
+                    if (Encounter[i] == IN_PROGRESS)
+                        return true;
+                }
+
+                return false;
             }
 
             void OnPlayerEnter(Player* player)
@@ -327,18 +318,8 @@ class instance_ulduar : public InstanceMapScript
                     if (!Players.isEmpty())
                         if (Player* player = Players.begin()->getSource())
                             TeamInInstance = player->GetTeam();
-
-                if (_summonAlgalon)
-                {
-                    _summonAlgalon = false;
-                    TempSummon* algalon = instance->SummonCreature(NPC_ALGALON, AlgalonLandPos);
-                    if (_algalonTimer && _algalonTimer <= 60)
-                        algalon->AI()->DoAction(ACTION_INIT_ALGALON);
-                    else
-                        algalon->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                 }
-            }
-}
+            }  
 
             void FillInitialWorldStates(WorldPacket& data)
             {
@@ -508,32 +489,9 @@ class instance_ulduar : public InstanceMapScript
                         if (TeamInInstance == HORDE)
                             creature->UpdateEntry(NPC_BATTLE_PRIEST_GINA, HORDE);
                         break;
-                    case NPC_BRANN_BRONZBEARD_ALG:
-                        BrannBronzebeardAlgGUID = creature->GetGUID();
-                        break;
-                    //! These creatures are summoned by something else than Algalon
-                    //! but need to be controlled/despawned by him - so they need to be
-                    //! registered in his summon list
-                    case NPC_ALGALON_VOID_ZONE_VISUAL_STALKER:
-                    case NPC_ALGALON_STALKER_ASTEROID_TARGET_01:
-                    case NPC_ALGALON_STALKER_ASTEROID_TARGET_02:
-                    case NPC_UNLEASHED_DARK_MATTER:
-                        if (Creature* algalon = instance->GetCreature(AlgalonGUID))
-                            algalon->AI()->JustSummoned(creature);
-                        break;
                 }
-            }
 
-            void OnCreatureRemove(Creature* creature)
-            {
-                switch (creature->GetEntry())
-                {
-                    case NPC_BRANN_BRONZBEARD_ALG:
-                        if (BrannBronzebeardAlgGUID == creature->GetGUID())
-                            BrannBronzebeardAlgGUID = 0;
-                        break;
-                }
-            }
+             }
 
             void OnGameObjectCreate(GameObject* gameObject)
             {
@@ -698,45 +656,6 @@ class instance_ulduar : public InstanceMapScript
                         YoggSaronBrainDoor3GUID = gameObject->GetGUID();
                         HandleGameObject(NULL, false, gameObject);
                     break;
-                    case GO_CELESTIAL_PLANETARIUM_ACCESS_10:
-                    case GO_CELESTIAL_PLANETARIUM_ACCESS_25:
-                        if (_algalonSummoned)
-                            gameObject->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
-                        break;
-                    case GO_DOODAD_UL_SIGILDOOR_01:
-                        AlgalonSigilDoorGUID[0] = gameObject->GetGUID();
-                        if (_algalonSummoned)
-                            gameObject->SetGoState(GO_STATE_ACTIVE);
-                        break;
-                    case GO_DOODAD_UL_SIGILDOOR_02:
-                        AlgalonSigilDoorGUID[1] = gameObject->GetGUID();
-                        if (_algalonSummoned)
-                            gameObject->SetGoState(GO_STATE_ACTIVE);
-                        break;
-                    case GO_DOODAD_UL_SIGILDOOR_03:
-                        AlgalonSigilDoorGUID[2] = gameObject->GetGUID();
-                        AddDoor(gameObject, true);
-                        break;
-                    case GO_DOODAD_UL_UNIVERSEFLOOR_01:
-                        AlgalonFloorGUID[0] = gameObject->GetGUID();
-                        AddDoor(gameObject, true);
-                        break;
-                    case GO_DOODAD_UL_UNIVERSEFLOOR_02:
-                        AlgalonFloorGUID[1] = gameObject->GetGUID();
-                        AddDoor(gameObject, true);
-                        break;
-                    case GO_DOODAD_UL_UNIVERSEGLOBE01:
-                        AlgalonUniverseGUID = gameObject->GetGUID();
-                        AddDoor(gameObject, true);
-                        break;
-                    case GO_DOODAD_UL_ULDUAR_TRAPDOOR_03:
-                        AlgalonTrapdoorGUID = gameObject->GetGUID();
-                        AddDoor(gameObject, true);
-                        break;
-                    case GO_GIFT_OF_THE_OBSERVER_10:
-                    case GO_GIFT_OF_THE_OBSERVER_25:
-                        GiftOfTheObserverGUID = gameObject->GetGUID();
-                        break;
                 }
             }
 
@@ -745,14 +664,10 @@ class instance_ulduar : public InstanceMapScript
                 switch (gameObject->GetEntry())
                 {
                     case GO_LEVIATHAN_DOOR:
-                    case GO_XT_002_DOOR:
-                    case GO_DOODAD_UL_SIGILDOOR_03:
-                    case GO_DOODAD_UL_UNIVERSEFLOOR_01:
-                    case GO_DOODAD_UL_UNIVERSEFLOOR_02:
-                    case GO_DOODAD_UL_UNIVERSEGLOBE01:
-                    case GO_DOODAD_UL_ULDUAR_TRAPDOOR_03:
                         AddDoor(gameObject, false);
                         break;
+                    case GO_XT_002_DOOR:
+                        AddDoor(gameObject, false);
                     default:
                         break;
                 }
@@ -790,7 +705,6 @@ class instance_ulduar : public InstanceMapScript
                 // Flame Leviathan's Tower Event triggers
                 Creature* FlameLeviathan = instance->GetCreature(LeviathanGUID);
                 if (FlameLeviathan && FlameLeviathan->isAlive()) // No leviathan, no event triggering ;)
-                {
                     switch (eventId)
                     {
                         case EVENT_TOWER_OF_STORM_DESTROYED:
@@ -806,7 +720,6 @@ class instance_ulduar : public InstanceMapScript
                             FlameLeviathan->AI()->DoAction(ACTION_TOWER_OF_LIFE_DESTROYED);
                             break;
                     }
-                }
             }
 
 
@@ -903,52 +816,6 @@ class instance_ulduar : public InstanceMapScript
                         else
                             HandleGameObject(YoggSaronDoorGUID, true);
                         break;
-                    case BOSS_ALGALON:
-                        if (state == DONE)
-                        {
-                            _events.CancelEvent(EVENT_UPDATE_ALGALON_TIMER);
-                            _events.CancelEvent(EVENT_DESPAWN_ALGALON);
-                            DoUpdateWorldState(WORLD_STATE_ALGALON_TIMER_ENABLED, 0);
-                            _algalonTimer = 61;
-                            if (GameObject* gameObject = instance->GetGameObject(GiftOfTheObserverGUID))
-                                gameObject->SetRespawnTime(gameObject->GetRespawnDelay());
-                            // get item level (recheck weapons)
-                            Map::PlayerList const& players = instance->GetPlayers();
-                            for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                                if (Player* player = itr->getSource())
-                                    for (uint8 slot = EQUIPMENT_SLOT_MAINHAND; slot <= EQUIPMENT_SLOT_RANGED; ++slot)
-                                        if (Item* item = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot))
-                                            if (item->GetTemplate()->ItemLevel > _maxWeaponItemLevel)
-                                                _maxWeaponItemLevel = item->GetTemplate()->ItemLevel;
-                        }
-                        else if (state == IN_PROGRESS)
-                        {
-                            // get item level (armor cannot be swapped in combat)
-                            Map::PlayerList const& players = instance->GetPlayers();
-                            for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
-                            {
-                                if (Player* player = itr->getSource())
-                                {
-                                    for (uint8 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; ++slot)
-                                    {
-                                        if (slot == EQUIPMENT_SLOT_TABARD || slot == EQUIPMENT_SLOT_BODY)
-                                            continue;
-
-                                        if (Item* item = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot))
-                                        {
-                                            if (slot >= EQUIPMENT_SLOT_MAINHAND && slot <= EQUIPMENT_SLOT_RANGED)
-                                            {
-                                                if (item->GetTemplate()->ItemLevel > _maxWeaponItemLevel)
-                                                    _maxWeaponItemLevel = item->GetTemplate()->ItemLevel;
-                                            }
-                                            else if (item->GetTemplate()->ItemLevel > _maxArmorItemLevel)
-                                                _maxArmorItemLevel = item->GetTemplate()->ItemLevel;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
                 }
 
                 if (GetBossState(BOSS_FREYA) == DONE &&
@@ -1039,16 +906,6 @@ class instance_ulduar : public InstanceMapScript
                             SaveToDB();
                         break;
                         }
-                    case EVENT_DESPAWN_ALGALON:
-                        DoUpdateWorldState(WORLD_STATE_ALGALON_TIMER_ENABLED, 1);
-                        DoUpdateWorldState(WORLD_STATE_ALGALON_DESPAWN_TIMER, 60);
-                        _algalonTimer = 60;
-                        _events.ScheduleEvent(EVENT_DESPAWN_ALGALON, 3600000);
-                        _events.ScheduleEvent(EVENT_UPDATE_ALGALON_TIMER, 60000);
-                        break;
-                    case DATA_ALGALON_SUMMON_STATE:
-                        _algalonSummoned = true;
-                        break;
                     default:
                         break;
                 }
@@ -1151,22 +1008,6 @@ class instance_ulduar : public InstanceMapScript
                         return KeeperGUIDs[1];
                     case BOSS_STONEBARK:
                         return KeeperGUIDs[2];
-                    case DATA_SIGILDOOR_01:
-                        return AlgalonSigilDoorGUID[0];
-                    case DATA_SIGILDOOR_02:
-                        return AlgalonSigilDoorGUID[1];
-                    case DATA_SIGILDOOR_03:
-                        return AlgalonSigilDoorGUID[2];
-                    case DATA_UNIVERSE_FLOOR_01:
-                        return AlgalonFloorGUID[0];
-                    case DATA_UNIVERSE_FLOOR_02:
-                        return AlgalonFloorGUID[1];
-                    case DATA_UNIVERSE_GLOBE:
-                        return AlgalonUniverseGUID;
-                    case DATA_ALGALON_TRAPDOOR:
-                        return AlgalonTrapdoorGUID;
-                    case DATA_BRANN_BRONZEBEARD_ALG:
-                        return BrannBronzebeardAlgGUID;
                 }
 
                 return 0;
@@ -1198,23 +1039,12 @@ class instance_ulduar : public InstanceMapScript
                 return 0;
             }
 
-            bool CheckAchievementCriteriaMeet(uint32 criteriaId, Player const* , Unit const* /* = NULL */, uint32 /* = 0 */)
-            {
-                switch (criteriaId)
-                {
-                    case CRITERIA_HERALD_OF_TITANS:
-                        return _maxArmorItemLevel <= MAX_HERALD_ARMOR_ITEMLEVEL && _maxWeaponItemLevel <= MAX_HERALD_WEAPON_ITEMLEVEL;
-                }
-
-                return false;
-            }
-
             std::string GetSaveData()
             {
                 OUT_SAVE_INST_DATA;
 
                 std::ostringstream saveStream;
-                saveStream << "U U " << GetBossSaveData() << GetData(DATA_COLOSSUS) << ' ' << _algalonTimer << ' ' << (_algalonSummoned ? 1 : 0);
+                saveStream << "U U " << GetBossSaveData() << GetData(DATA_COLOSSUS) << " " << PlayerDeathFlag << " "  << AlgalonIntroDone << " " << SignalTimerState << " " << SignalTimerMinutes;
 
                 OUT_SAVE_INST_DATA_COMPLETE;
                 return saveStream.str();
@@ -1250,27 +1080,6 @@ class instance_ulduar : public InstanceMapScript
                         else
                             SetBossState(i, EncounterState(tmpState));
                     Encounter[i] = tmpState;
-                        SetBossState(i, EncounterState(tmpState));
-                    }
-
-                    uint32 tempState;
-                    loadStream >> tempState;
-                    if (tempState == IN_PROGRESS || tempState > SPECIAL)
-                        tempState = NOT_STARTED;
-                    SetData(DATA_COLOSSUS, tempState);
-
-                    loadStream >> _algalonTimer;
-                    loadStream >> tempState;
-                    _algalonSummoned = tempState != 0;
-                    if (_algalonSummoned && GetBossState(BOSS_ALGALON) != DONE)
-                    {
-                        _summonAlgalon = true;
-                        if (_algalonTimer && _algalonTimer <= 60)
-                        {
-                            _events.ScheduleEvent(EVENT_UPDATE_ALGALON_TIMER, 60000);
-                            DoUpdateWorldState(WORLD_STATE_ALGALON_TIMER_ENABLED, 1);
-                            DoUpdateWorldState(WORLD_STATE_ALGALON_DESPAWN_TIMER, _algalonTimer);
-                        }
                     }
                     loadStream >> data1;
                     loadStream >> data2;
