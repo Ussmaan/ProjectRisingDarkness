@@ -657,10 +657,10 @@ public:
             return false;
 
         InstanceScript* instance = player->GetInstanceScript();
-        if (!instance || instance->IsEncounterInProgress() || instance->GetBossState(DATA_KELTHUZAD) == DONE)
+        if (!instance || instance->IsEncounterInProgress() || instance->GetBossState(BOSS_KELTHUZAD) == DONE)
             return false;
 
-        Creature* pKelthuzad = Unit::GetCreature(*player, instance->GetData64(DATA_KELTHUZAD));
+        Creature* pKelthuzad = Unit::GetCreature(*player, instance->GetData64(BOSS_KELTHUZAD));
         if (!pKelthuzad)
             return false;
 
