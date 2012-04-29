@@ -1503,7 +1503,7 @@ public:
         npc_rocket_strikeAI(Creature* creature) : Scripted_NoMovementAI(creature)
         {
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
-            me->ForcedDespawn(10000);
+            me->DespawnOrUnsummon(10000);
             DoCast(me, SPELL_ROCKET_STRIKE_AURA);
         }
     };
@@ -1803,7 +1803,7 @@ class npc_magnetic_core : public CreatureScript
             npc_magnetic_coreAI(Creature* creature) : Scripted_NoMovementAI(creature)
             {
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_PACIFIED);
-                me->ForcedDespawn(21000);
+                me->DespawnOrUnsummon(21000);
                 if (Creature* AerialUnit = me->FindNearestCreature(NPC_AERIAL_COMMAND_UNIT, 100.0f, true))
                 {
                     AerialUnit->AI()->DoAction(DO_DISABLE_AERIAL);
@@ -1949,7 +1949,7 @@ class npc_mimiron_bomb_bot : public CreatureScript
                 {
                     _despawn = true;
                     DoCast(me, SPELL_BOMB_BOT, true);
-                    me->ForcedDespawn(500);
+                    me->DespawnOrUnsummon(500);
                 }
             }
 
@@ -2017,7 +2017,7 @@ class npc_mimiron_flame_trigger : public CreatureScript
                     case SPELL_FROST_BOMB_EXPLOSION_25:
                     case SPELL_WATER_SPRAY:
                         _flameTimer = 1000;
-                        me->ForcedDespawn(500);
+                        me->DespawnOrUnsummon(500);
                         break;
                     default:
                         break;
