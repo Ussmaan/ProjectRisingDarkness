@@ -474,7 +474,7 @@ class spell_oculus_shock_lance : public SpellScriptLoader
                 uint32 damage = GetHitDamage();
                 uint32 damageFromCharges = 0;
 
-                if(Aura* shockCharges = GetTargetUnit()->GetAura(SPELL_SHOCK_CHARGE, GetCaster()->GetGUID()))
+                if(Aura* shockCharges = GetExplTargetUnit()->GetAura(SPELL_SHOCK_CHARGE, GetCaster()->GetGUID()))
                 {
                     uint32 baseDamage = GetHitDamage();
                     uint32 chargeNumber = shockCharges->GetStackAmount();
@@ -489,7 +489,7 @@ class spell_oculus_shock_lance : public SpellScriptLoader
             void HandleAfterHit()
             {
                 // Remove auras after the hit
-                if(Aura* shockCharges = GetTargetUnit()->GetAura(SPELL_SHOCK_CHARGE, GetCaster()->GetGUID()))
+                if(Aura* shockCharges = GetExplTargetUnit()->GetAura(SPELL_SHOCK_CHARGE, GetCaster()->GetGUID()))
                     shockCharges->Remove();
             }
             void Register()
