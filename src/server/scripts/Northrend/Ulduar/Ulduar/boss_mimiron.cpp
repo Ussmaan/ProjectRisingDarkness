@@ -254,7 +254,7 @@ class boss_mimiron : public CreatureScript
                     return;
 
                 for (std::list<Creature*>::iterator iter = creatures.begin(); iter != creatures.end(); ++iter)
-                    (*iter)->ForcedDespawn();
+                    (*iter)->DespawnOrUnsummon();
             }
 
             void Reset()
@@ -326,7 +326,7 @@ class boss_mimiron : public CreatureScript
                 }
 
                 EnterEvadeMode();
-                me->ForcedDespawn(5000);
+                me->DespawnOrUnsummon(5000);
             }
 
             void EnterCombat(Unit* /*who*/)
@@ -1131,7 +1131,7 @@ class boss_leviathan_mk_turret : public CreatureScript
                     if (playerList.empty())
                         return NULL;
 
-                    return SelectRandomContainerElement(playerList);
+                    return Trinity::Containers::SelectRandomContainerElement(playerList);
                 }
                 else
                     return NULL;
@@ -1192,7 +1192,7 @@ public:
             if (!Boom && me->IsWithinDistInMap(who, 0.5f) && who->ToPlayer() && !who->ToPlayer()->isGameMaster())
             {
                 DoCastAOE(SPELL_EXPLOSION);
-                me->ForcedDespawn(1000);
+                me->DespawnOrUnsummon(1000);
                 Boom = true;
             }
         }
@@ -1204,7 +1204,7 @@ public:
                 if (!Boom)
                 {
                     DoCastAOE(SPELL_EXPLOSION);
-                    me->ForcedDespawn(1000);
+                    me->DespawnOrUnsummon(1000);
                     Boom = true;
                 }
             }
@@ -1469,7 +1469,7 @@ public:
                             me->GetCreatureListWithEntryInGrid(_flames, NPC_FLAME_SPREAD, 150.0f);
                             if (!_flames.empty())
                             {
-                                if (Creature* flame = SelectRandomContainerElement(_flames))
+                                if (Creature* flame = Trinity::Containers::SelectRandomContainerElement(_flames))
                                     me->SummonCreature(NPC_FROST_BOMB, *flame, TEMPSUMMON_TIMED_DESPAWN, 11000);
                             }
                             else
@@ -2094,7 +2094,7 @@ class npc_mimiron_flame_spread : public CreatureScript
                     case SPELL_WATER_SPRAY:
                         if (Creature* mimiron = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetData64(BOSS_MIMIRON) : 0))
                             mimiron->AI()->DoAction(DO_DECREASE_FLAME_COUNT);
-                        me->ForcedDespawn(500);
+                        me->DespawnOrUnsummon(500);
                         break;
                     default:
                         break;
@@ -2104,7 +2104,7 @@ class npc_mimiron_flame_spread : public CreatureScript
             void UpdateAI(uint32 const /*diff*/)
             {
                 if (_instance && _instance->GetBossState(BOSS_MIMIRON) != IN_PROGRESS)
-                    me->ForcedDespawn();
+                    me->DespawnOrUnsummon();
             }
 
         private:

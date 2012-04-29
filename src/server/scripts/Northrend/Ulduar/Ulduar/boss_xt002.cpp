@@ -855,7 +855,7 @@ class spell_xt002_searing_light : public SpellScriptLoader
                 if (unitList.empty())
                     return;
 
-                _target = SelectRandomContainerElement(unitList);
+                _target = Trinity::Containers::SelectRandomContainerElement(unitList);
                 unitList.clear();
                 unitList.push_back(_target);
             }
@@ -927,7 +927,7 @@ class spell_xt002_gravity_bomb : public SpellScriptLoader
                 if (unitList.empty())
                     return;
 
-                _target = SelectRandomContainerElement(unitList);
+                _target = Trinity::Containers::SelectRandomContainerElement(unitList);
                 unitList.clear();
                 unitList.push_back(_target);
             }
