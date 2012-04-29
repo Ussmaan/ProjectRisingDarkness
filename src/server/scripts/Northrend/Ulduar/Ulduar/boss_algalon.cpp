@@ -887,9 +887,8 @@ class boss_algalon : public CreatureScript
                         events.RepeatEvent(50000);
                         break;
                     case EVENT_SUMMON_UNLEASHED_DARK_MATTER:
-                        summons.DoAction(CREATURE_BLACK_HOLE, ACTION_BLACKHOLE_SUMMON);
                         EntryCheckPredicate pred(CREATURE_BLACK_HOLE);
-              		summons.DoAction(ACTION_BLACKHOLE_SUMMON, pred);
+              		summons.DoAction(ACTION_BLACKHOLE_SUMMON, pred); 
                         events.RepeatEvent(30000);
                         break;
                     default:
