@@ -893,7 +893,7 @@ class boss_algalon : public CreatureScript
                         break;
                     default:
                         events.PopEvent();
-                        break;
+                        
                     }
 
                     if(me->GetReactState() != REACT_PASSIVE)
