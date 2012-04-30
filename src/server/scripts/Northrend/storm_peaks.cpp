@@ -1232,6 +1232,5 @@ void AddSC_storm_peaks()
     new npc_dead_irongiant();
     new npc_snowblind_follower();
     new npc_exhausted_vrykul;
-    new npc_brunnhildar_prisoner();
     new npc_hyldsmeet_protodrake();
 }
