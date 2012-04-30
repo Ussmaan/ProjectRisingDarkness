@@ -4711,7 +4711,6 @@ void AddSC_npcs_special()
     new npc_dark_iron_herald();
     new npc_dark_iron_guzzler();
     new npc_wild_turkey();
-    new npc_experience();
     new npc_fire_elemental();
     new npc_earth_elemental();
     new npc_firework();
