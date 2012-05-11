@@ -187,18 +187,6 @@ class instance_pit_of_saron : public InstanceMapScript
                         break;
                 }
             }
-            
-            void OnGameObjectCreate(GameObject* go)
-            {
-               switch (go->GetEntry())
-               {
-                    case GO_ICE_WALL:
-                        uiIceWall = go->GetGUID();
-                        if (GetBossState(DATA_GARFROST) == DONE && GetBossState(DATA_ICK) == DONE)
-                            HandleGameObject(NULL,true,go);
-                    break;
-                }
-            }
 
             void OnGameObjectCreate(GameObject* go)
             {
