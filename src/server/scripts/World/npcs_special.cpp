@@ -2338,21 +2338,12 @@ public:
 # npc_wormhole
 ######*/
 
-<<<<<<< HEAD
 #define GOSSIP_ENGINEERING1   "Borean Tundra."
 #define GOSSIP_ENGINEERING2   "Howling Fjord."
 #define GOSSIP_ENGINEERING3   "Sholazar Basin."
 #define GOSSIP_ENGINEERING4   "Icecrown."
 #define GOSSIP_ENGINEERING5   "Storm Peaks."
 #define GOSSIP_ENGINEERING6   "The Underground."
-=======
-#define GOSSIP_ENGINEERING1   "Borean Tundra"
-#define GOSSIP_ENGINEERING2   "Howling Fjord"
-#define GOSSIP_ENGINEERING3   "Sholazar Basin"
-#define GOSSIP_ENGINEERING4   "Icecrown"
-#define GOSSIP_ENGINEERING5   "Storm Peaks"
-#define GOSSIP_ENGINEERING6   "Underground..."
->>>>>>> tc/master
 
 enum WormholeSpells
 {
@@ -2360,28 +2351,16 @@ enum WormholeSpells
     SPELL_SHOLAZAR_BASIN        = 67835,
     SPELL_ICECROWN              = 67836,
     SPELL_STORM_PEAKS           = 67837,
-<<<<<<< HEAD
-    SPELL_UNDERGROUND           = 68081,
-
-    TEXT_WORMHOLE               = 907,
-    DATA_UNDERGROUND            = 1
-=======
     SPELL_HOWLING_FJORD         = 67838,
     SPELL_UNDERGROUND           = 68081,
-
     TEXT_WORMHOLE               = 907,
-
     DATA_SHOW_UNDERGROUND       = 1,
->>>>>>> tc/master
 };
 
 class npc_wormhole : public CreatureScript
 {
     public:
-<<<<<<< HEAD
-        npc_wormhole() : CreatureScript("npc_wormhole") { }
 
-=======
         npc_wormhole() : CreatureScript("npc_wormhole") {}
 
         struct npc_wormholeAI : public PassiveAI
@@ -2402,7 +2381,6 @@ class npc_wormhole : public CreatureScript
             bool _showUnderground;
         };
 
->>>>>>> tc/master
         bool OnGossipHello(Player* player, Creature* creature)
         {
             if (creature->isSummon())
@@ -2418,72 +2396,7 @@ class npc_wormhole : public CreatureScript
                     if (creature->AI()->GetData(DATA_SHOW_UNDERGROUND))
                         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
 
-<<<<<<< HEAD
-                if (creature->AI()->GetData(DATA_UNDERGROUND) == 1)
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
-            }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-            return true;
-        }
-
-        bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action)
-        {
-            player->PlayerTalkClass->ClearMenus();
-            bool roll = urand(0, 1);
-
-            switch(action)
-            {
-                case GOSSIP_ACTION_INFO_DEF + 1: // Borean Tundra
-                    player->CLOSE_GOSSIP_MENU();
-                    if (roll) // At the moment we don't have chance on spell_target_position table so we hack this
-                        player->TeleportTo(571, 4305.505859f, 5450.839844f, 63.005806f, 0.627286f);
-                    else
-                        player->TeleportTo(571, 3201.936279f, 5630.123535f, 133.658798f, 3.855272f);
-                    break;
-                case GOSSIP_ACTION_INFO_DEF + 2: // Howling Fjord
-                    player->CLOSE_GOSSIP_MENU();
-                    player->CastSpell(player, SPELL_HOWLING_FJORD, true);
-                    break;
-                case GOSSIP_ACTION_INFO_DEF + 3: // Sholazar Basin
-                    player->CLOSE_GOSSIP_MENU();
-                    player->CastSpell(player, SPELL_SHOLAZAR_BASIN, true);
-                    break;
-                case GOSSIP_ACTION_INFO_DEF + 4: // Icecrown
-                    player->CLOSE_GOSSIP_MENU();
-                    player->CastSpell(player, SPELL_ICECROWN, true);
-                    break;
-                case GOSSIP_ACTION_INFO_DEF + 5: // Storm peaks
-                    player->CLOSE_GOSSIP_MENU();
-                    player->CastSpell(player, SPELL_STORM_PEAKS, true);
-                    break;
-                case GOSSIP_ACTION_INFO_DEF + 6: // Underground
-                    player->CLOSE_GOSSIP_MENU();
-                    player->CastSpell(player, SPELL_UNDERGROUND, true);
-                    break;
-            }
-            return true;
-        }
-
-        struct npc_wormholeAI : PassiveAI
-        {
-            npc_wormholeAI(Creature* c) : PassiveAI(c)
-            {
-                _random = urand(0, 9);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-            }
-
-            uint32 GetData(uint32 type)
-            {
-                if (type == DATA_UNDERGROUND)
-                    return (_random > 0) ? 0 : 1;
-                return 0;
-            }
-
-        private:
-            uint8 _random;
-        };
-=======
                     player->PlayerTalkClass->SendGossipMenu(TEXT_WORMHOLE, creature->GetGUID());
                 }
             }
@@ -2525,7 +2438,6 @@ class npc_wormhole : public CreatureScript
 
             return true;
         }
->>>>>>> tc/master
 
         CreatureAI* GetAI(Creature* creature) const
         {
