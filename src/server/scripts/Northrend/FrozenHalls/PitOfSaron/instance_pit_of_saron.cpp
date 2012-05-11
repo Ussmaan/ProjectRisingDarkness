@@ -47,6 +47,12 @@ const Position spawnPoints1[4] =
     {766.413635f, -36.130611f, 508.346466f, 4.056557f},
 };
 
+DoorData const Doors[] =
+{
+    {GO_ICE_WALL,   DATA_GARFROST,  DOOR_TYPE_PASSAGE,  BOUNDARY_NONE},
+    {GO_ICE_WALL,   DATA_ICK,       DOOR_TYPE_PASSAGE,  BOUNDARY_NONE},
+};
+
 class instance_pit_of_saron : public InstanceMapScript
 {
     public:
@@ -57,6 +63,7 @@ class instance_pit_of_saron : public InstanceMapScript
             instance_pit_of_saron_InstanceScript(Map* map) : InstanceScript(map)
             {
                 SetBossNumber(MAX_ENCOUNTER);
+                LoadDoorData(Doors);
                 _garfrostGUID = 0;
                 _krickGUID = 0;
                 _ickGUID = 0;
@@ -190,6 +197,26 @@ class instance_pit_of_saron : public InstanceMapScript
                         if (GetBossState(DATA_GARFROST) == DONE && GetBossState(DATA_ICK) == DONE)
                             HandleGameObject(NULL,true,go);
                     break;
+                }
+            }
+
+            void OnGameObjectCreate(GameObject* go)
+            {
+                switch (go->GetEntry())
+                {
+                    case GO_ICE_WALL:
+                        AddDoor(go, true);
+                        break;
+                }
+            }
+
+            void OnGameObjectRemove(GameObject* go)
+            {
+                switch (go->GetEntry())
+                {
+                    case GO_ICE_WALL:
+                        AddDoor(go, false);
+                        break;
                 }
             }
 

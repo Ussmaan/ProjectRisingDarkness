@@ -2076,33 +2076,31 @@ public:
 
 class npc_lightwell : public CreatureScript
 {
-public:
-    npc_lightwell() : CreatureScript("npc_lightwell") { }
+    public:
+        npc_lightwell() : CreatureScript("npc_lightwell") { }
 
-    struct npc_lightwellAI : public PassiveAI
-    {
-        npc_lightwellAI(Creature* creature) : PassiveAI(creature) {}
-
-        void Reset()
+        struct npc_lightwellAI : public PassiveAI
         {
-            DoCast(me, 59907, false); // Spell for Lightwell Charges
-        }
+            npc_lightwellAI(Creature* creature) : PassiveAI(creature)
+            {
+                DoCast(me, 59907, false);
+            }
 
-        void EnterEvadeMode()
+            void EnterEvadeMode()
+            {
+                if (!me->isAlive())
+                    return;
+
+                me->DeleteThreatList();
+                me->CombatStop(true);
+                me->ResetPlayerDamageReq();
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const
         {
-            if (!me->isAlive())
-                return;
-
-            me->DeleteThreatList();
-            me->CombatStop(true);
-            me->ResetPlayerDamageReq();
+            return new npc_lightwellAI(creature);
         }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_lightwellAI(creature);
-    }
 };
 
 enum eTrainingDummy
@@ -2199,34 +2197,26 @@ public:
 
 class npc_shadowfiend : public CreatureScript
 {
-public:
-    npc_shadowfiend() : CreatureScript("npc_shadowfiend") { }
+    public:
+        npc_shadowfiend() : CreatureScript("npc_shadowfiend") { }
 
-    struct npc_shadowfiendAI : public ScriptedAI
-    {
-        npc_shadowfiendAI(Creature* creature) : ScriptedAI(creature) {}
-
-        void DamageTaken(Unit* /*killer*/, uint32& damage)
+        struct npc_shadowfiendAI : public ScriptedAI
         {
-            if (me->isSummon())
-                if (Unit* owner = me->ToTempSummon()->GetSummoner())
-                    if (owner->HasAura(GLYPH_OF_SHADOWFIEND) && damage >= me->GetHealth())
-                        owner->CastSpell(owner, GLYPH_OF_SHADOWFIEND_MANA, true);
-        }
+            npc_shadowfiendAI(Creature* creature) : ScriptedAI(creature) {}
 
-        void UpdateAI(uint32 const /*diff*/)
+            void DamageTaken(Unit* /*killer*/, uint32& damage)
+            {
+                if (me->isSummon())
+                    if (Unit* owner = me->ToTempSummon()->GetSummoner())
+                        if (owner->HasAura(GLYPH_OF_SHADOWFIEND) && damage >= me->GetHealth())
+                            owner->CastSpell(owner, GLYPH_OF_SHADOWFIEND_MANA, true);
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const
         {
-            if (!UpdateVictim())
-                return;
-
-            DoMeleeAttackIfReady();
+            return new npc_shadowfiendAI(creature);
         }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_shadowfiendAI(creature);
-    }
 };
 
 /*######
@@ -2293,7 +2283,7 @@ public:
         }
     };
 
-    CreatureAI *GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_fire_elementalAI(creature);
     }
@@ -2338,7 +2328,7 @@ public:
         }
     };
 
-    CreatureAI *GetAI(Creature* creature) const
+    CreatureAI* GetAI(Creature* creature) const
     {
         return new npc_earth_elementalAI(creature);
     }
@@ -2348,40 +2338,87 @@ public:
 # npc_wormhole
 ######*/
 
+<<<<<<< HEAD
 #define GOSSIP_ENGINEERING1   "Borean Tundra."
 #define GOSSIP_ENGINEERING2   "Howling Fjord."
 #define GOSSIP_ENGINEERING3   "Sholazar Basin."
 #define GOSSIP_ENGINEERING4   "Icecrown."
 #define GOSSIP_ENGINEERING5   "Storm Peaks."
 #define GOSSIP_ENGINEERING6   "The Underground."
+=======
+#define GOSSIP_ENGINEERING1   "Borean Tundra"
+#define GOSSIP_ENGINEERING2   "Howling Fjord"
+#define GOSSIP_ENGINEERING3   "Sholazar Basin"
+#define GOSSIP_ENGINEERING4   "Icecrown"
+#define GOSSIP_ENGINEERING5   "Storm Peaks"
+#define GOSSIP_ENGINEERING6   "Underground..."
+>>>>>>> tc/master
 
-enum eWormhole
+enum WormholeSpells
 {
-    SPELL_HOWLING_FJORD         = 67838,
+    SPELL_BOREAN_TUNDRA         = 67834,
     SPELL_SHOLAZAR_BASIN        = 67835,
     SPELL_ICECROWN              = 67836,
     SPELL_STORM_PEAKS           = 67837,
+<<<<<<< HEAD
     SPELL_UNDERGROUND           = 68081,
 
     TEXT_WORMHOLE               = 907,
     DATA_UNDERGROUND            = 1
+=======
+    SPELL_HOWLING_FJORD         = 67838,
+    SPELL_UNDERGROUND           = 68081,
+
+    TEXT_WORMHOLE               = 907,
+
+    DATA_SHOW_UNDERGROUND       = 1,
+>>>>>>> tc/master
 };
 
 class npc_wormhole : public CreatureScript
 {
     public:
+<<<<<<< HEAD
         npc_wormhole() : CreatureScript("npc_wormhole") { }
 
+=======
+        npc_wormhole() : CreatureScript("npc_wormhole") {}
+
+        struct npc_wormholeAI : public PassiveAI
+        {
+            npc_wormholeAI(Creature* creature) : PassiveAI(creature) {}
+
+            void InitializeAI()
+            {
+                _showUnderground = urand(0, 100) == 0; // Guessed value, it is really rare though
+            }
+
+            uint32 GetData(uint32 type)
+            {
+                return (type == DATA_SHOW_UNDERGROUND && _showUnderground) ? 1 : 0;
+            }
+
+        private:
+            bool _showUnderground;
+        };
+
+>>>>>>> tc/master
         bool OnGossipHello(Player* player, Creature* creature)
         {
-            if (player == creature->ToTempSummon()->GetSummoner())
+            if (creature->isSummon())
             {
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                if (player == creature->ToTempSummon()->GetSummoner())
+                {
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
 
+                    if (creature->AI()->GetData(DATA_SHOW_UNDERGROUND))
+                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+
+<<<<<<< HEAD
                 if (creature->AI()->GetData(DATA_UNDERGROUND) == 1)
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
             }
@@ -2446,6 +2483,49 @@ class npc_wormhole : public CreatureScript
         private:
             uint8 _random;
         };
+=======
+                    player->PlayerTalkClass->SendGossipMenu(TEXT_WORMHOLE, creature->GetGUID());
+                }
+            }
+
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+
+            switch (action)
+            {
+                case GOSSIP_ACTION_INFO_DEF + 1: // Borean Tundra
+                    player->CLOSE_GOSSIP_MENU();
+                    creature->CastSpell(player, SPELL_BOREAN_TUNDRA, false);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 2: // Howling Fjord
+                    player->CLOSE_GOSSIP_MENU();
+                    creature->CastSpell(player, SPELL_HOWLING_FJORD, false);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 3: // Sholazar Basin
+                    player->CLOSE_GOSSIP_MENU();
+                    creature->CastSpell(player, SPELL_SHOLAZAR_BASIN, false);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 4: // Icecrown
+                    player->CLOSE_GOSSIP_MENU();
+                    creature->CastSpell(player, SPELL_ICECROWN, false);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 5: // Storm peaks
+                    player->CLOSE_GOSSIP_MENU();
+                    creature->CastSpell(player, SPELL_STORM_PEAKS, false);
+                    break;
+                case GOSSIP_ACTION_INFO_DEF + 6: // Underground
+                    player->CLOSE_GOSSIP_MENU();
+                    creature->CastSpell(player, SPELL_UNDERGROUND, false);
+                    break;
+            }
+
+            return true;
+        }
+>>>>>>> tc/master
 
         CreatureAI* GetAI(Creature* creature) const
         {
