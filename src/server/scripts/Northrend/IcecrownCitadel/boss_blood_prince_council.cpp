@@ -1328,6 +1328,7 @@ class npc_dark_nucleus : public CreatureScript
 
                 me->DeleteThreatList();
                 me->AddThreat(attacker, 500000000.0f);
+                AttackStart(attacker);
             }
 
             void UpdateAI(uint32 const diff)
