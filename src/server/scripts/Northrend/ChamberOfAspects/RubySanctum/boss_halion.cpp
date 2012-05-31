@@ -1561,11 +1561,23 @@ class spell_halion_twilight_cutter : public SpellScriptLoader
         }
 };
 
+class go_halion_portal : public GameObjectScript
+{
+public:
+    go_beacon_of_light() : GameObjectScript("go_halion_portal") { }
+
+    bool OnGossipHello(Player* player, GameObject* go)
+    {
+        go->SetGoState(GO_STATE_READY);
+        return true;
+    }
+};
+
 void AddSC_boss_halion()
 {
     new boss_halion();
     new boss_twilight_halion();
-
+    new go_halion_portal();
     new npc_halion_controller();
     new npc_meteor_strike_initial();
     new npc_meteor_strike();

@@ -24,7 +24,7 @@
 
 #define ICCScriptName "instance_icecrown_citadel"
 
-uint32 const EncounterCount = 13;
+uint32 const EncounterCount = 14;
 uint32 const WeeklyNPCs = 9;
 uint32 const MaxHeroicAttempts = 50;
 
@@ -81,51 +81,36 @@ enum DataTypes
     DATA_VALITHRIA_DREAMWALKER      = 10,
     DATA_SINDRAGOSA                 = 11,
     DATA_THE_LICH_KING              = 12,
+    DATA_SINDRAGOSA_GAUNTLET        = 13,
 
     // Additional data
-    DATA_SAURFANG_EVENT_NPC         = 13,
-    DATA_BONED_ACHIEVEMENT          = 14,
-    DATA_OOZE_DANCE_ACHIEVEMENT     = 15,
-    DATA_PUTRICIDE_TABLE            = 16,
-    DATA_NAUSEA_ACHIEVEMENT         = 17,
-    DATA_ORB_WHISPERER_ACHIEVEMENT  = 18,
-    DATA_PRINCE_KELESETH_GUID       = 19,
-    DATA_PRINCE_TALDARAM_GUID       = 20,
-    DATA_PRINCE_VALANAR_GUID        = 21,
-    DATA_BLOOD_PRINCES_CONTROL      = 22,
-    DATA_SINDRAGOSA_FROSTWYRMS      = 23,
-    DATA_SPINESTALKER               = 24,
-    DATA_RIMEFANG                   = 25,
-    DATA_COLDFLAME_JETS             = 26,
-    DATA_TEAM_IN_INSTANCE           = 27,
-    DATA_BLOOD_QUICKENING_STATE     = 28,
-    DATA_HEROIC_ATTEMPTS            = 29,
-    DATA_CROK_SCOURGEBANE           = 30,
-    DATA_CAPTAIN_ARNATH             = 31,
-    DATA_CAPTAIN_BRANDON            = 32,
-    DATA_CAPTAIN_GRONDEL            = 33,
-    DATA_CAPTAIN_RUPERT             = 34,
-    DATA_VALITHRIA_TRIGGER          = 35,
-    DATA_VALITHRIA_LICH_KING        = 36,
-    DATA_HIGHLORD_TIRION_FORDRING   = 37,
-    DATA_ARTHAS_PLATFORM            = 38,
-    DATA_TERENAS_MENETHIL           = 39,
-    // For Gunship
-    DATA_FIRST_SQUAD_STATE                  = 100,
-    DATA_SECOND_SQUAD_STATE                 = 101,
-    DATA_SPIRE_FROSTWYRM_STATE              = 102,
-    DATA_GB_HIGH_OVERLORD_SAURFANG          = 103,
-    DATA_GB_MURADIN_BRONZEBEARD             = 104,
-    DATA_HIGH_OVERLORD_SAURFANG_NOT_VISUAL  = 105,
-    DATA_GB_BATTLE_MAGE                     = 106,
-    DATA_SKYBREAKER_BOSS                    = 107,
-    DATA_ORGRIMMAR_HAMMER_BOSS              = 108,
-    DATA_MURADIN_BRONZEBEARD_NOT_VISUAL     = 109,
-
-    // misc
-    DATA_MURADIN_BRONZEBEARD        = 66,
-    DATA_GUNSHIP_BATTLE             = 67,
-    GUID_PLAYER_LOCATION            = 69,
+    DATA_SAURFANG_EVENT_NPC         = 14,
+    DATA_BONED_ACHIEVEMENT          = 15,
+    DATA_OOZE_DANCE_ACHIEVEMENT     = 16,
+    DATA_PUTRICIDE_TABLE            = 17,
+    DATA_NAUSEA_ACHIEVEMENT         = 18,
+    DATA_ORB_WHISPERER_ACHIEVEMENT  = 19,
+    DATA_PRINCE_KELESETH_GUID       = 20,
+    DATA_PRINCE_TALDARAM_GUID       = 21,
+    DATA_PRINCE_VALANAR_GUID        = 22,
+    DATA_BLOOD_PRINCES_CONTROL      = 23,
+    DATA_SINDRAGOSA_FROSTWYRMS      = 24,
+    DATA_SPINESTALKER               = 25,
+    DATA_RIMEFANG                   = 26,
+    DATA_COLDFLAME_JETS             = 27,
+    DATA_TEAM_IN_INSTANCE           = 28,
+    DATA_BLOOD_QUICKENING_STATE     = 29,
+    DATA_HEROIC_ATTEMPTS            = 30,
+    DATA_CROK_SCOURGEBANE           = 31,
+    DATA_CAPTAIN_ARNATH             = 32,
+    DATA_CAPTAIN_BRANDON            = 33,
+    DATA_CAPTAIN_GRONDEL            = 34,
+    DATA_CAPTAIN_RUPERT             = 35,
+    DATA_VALITHRIA_TRIGGER          = 36,
+    DATA_VALITHRIA_LICH_KING        = 37,
+    DATA_HIGHLORD_TIRION_FORDRING   = 38,
+    DATA_ARTHAS_PLATFORM            = 39,
+    DATA_TERENAS_MENETHIL           = 40,
 };
 
 enum CreaturesIds
@@ -178,36 +163,6 @@ enum CreaturesIds
     NPC_EMPOWERED_ADHERENT                      = 38136,
     NPC_REANIMATED_ADHERENT                     = 38010,
     NPC_VENGEFUL_SHADE                          = 38222,
-
-    // Gunship Battle
-    NPC_GB_SKYBREAKER                           = 37540,
-    NPC_GB_ORGRIMS_HAMMER                       = 37215,
-    NPC_GB_HIGH_OVERLORD_SAURFANG               = 36939,
-    NPC_GB_MURADIN_BRONZEBEARD                  = 36948,
-    NPC_GB_HIHG_CAPTAIN_JUSTIN_BARTLETT         = 37182,
-    NPC_GB_HIGH_OVERLORD_SAURFANG_NOT_VISUAL    = 50004,
-    NPC_GB_MURADIN_BRONZEBEARD_NOT_VISUAL       = 50006,
-    NPC_GB_SKYBREAKER_SORCERER				    = 37026,
-    NPC_GB_SKYBREAKER_SORCERERS                 = 37116,
-    NPC_GB_KORKRON_REAVER                       = 37920,
-    NPC_GB_KORKRON_REAVERS                      = 36957,
-    NPC_GB_KORKRON_SERGANTE                     = 36960,
-    NPC_GB_SKYBREAKER_SERGANTE                  = 36961,
-    NPC_GB_KORKRON_BATTLE_MAGE                  = 37117,
-    NPC_GB_SKYBREAKER_MARINE                    = 36950,
-    NPC_GB_KORKRON_ROCKETEER                    = 36982,
-    NPC_GB_SKYBREAKER_MORTAR_SOLDIER            = 36978,
-    NPC_GB_KORKRON_AXETHROWER                   = 36968,
-    NPC_GB_SKYBREAKER_RIFLEMAN                  = 36969,
-    NPC_GB_SKYBREAKER_DECKHAND                  = 36970,
-    NPC_GB_ZAFOD_BOOMBOX                        = 37184,
-    NPC_GB_ALLIANCE_CANON                       = 36838,
-    NPC_GB_HORDE_CANON                          = 36839,
-    NPC_GB_INVISIBLE_STALKER                    = 32780,
-    NPC_GB_PORTAL                               = 37227,
-    NPC_GB_GUNSHIP_HULL                         = 37547,
-    NPC_KORKRON_INVOKER                         = 37033,
-    NPC_SPIRE_FROSTWYRM	                        = 37230,
 
     // Deathbringer Saurfang
     NPC_DEATHBRINGER_SAURFANG                   = 37813,
@@ -321,6 +276,14 @@ enum CreaturesIds
     NPC_WORLD_TRIGGER_INFINITE_AOI              = 36171,
     NPC_SPIRIT_BOMB                             = 39189,
     NPC_FROSTMOURNE_TRIGGER                     = 38584,
+
+    // Sindragosas Ward
+    NPC_SINDRAGOSAS_WARD                        = 37503,
+    NPC_NERUBAR_WEBWEAVER                       = 37502,
+    NPC_NERUBAR_CHAMPION                        = 37501,
+    NPC_NERUBAR_BROODLING                       = 37232,
+    NPC_FROSTWARDEN_WARRIOR                     = 37228,
+    NPC_FROSTWARDEN_SORCERESS                   = 37229,
 };
 
 enum GameObjectsIds
@@ -339,20 +302,6 @@ enum GameObjectsIds
     // Lady Deathwhisper
     GO_ORATORY_OF_THE_DAMNED_ENTRANCE       = 201563,
     GO_LADY_DEATHWHISPER_ELEVATOR           = 202220,
-
-    //Gunship Battle
-    GO_ORGRIM_S_HAMMER_HORDE_ICC            = 201812,
-    GO_ORGRIM_S_HAMMER_ALLIANCE_ICC         = 201581,
-    GO_THE_SKYBREAKER_HORDE_ICC             = 201811,
-    GO_THE_SKYBREAKER_ALLIANCE_ICC          = 201580,
-    GO_CAPITAN_CHEST_A_10N                  = 201872,
-    GO_CAPITAN_CHEST_A_25N                  = 201873,
-    GO_CAPITAN_CHEST_A_10H                  = 201874,
-    GO_CAPITAN_CHEST_A_25H                  = 201875,
-    GO_CAPITAN_CHEST_H_10N                  = 202177,
-    GO_CAPITAN_CHEST_H_25N                  = 202178,
-    GO_CAPITAN_CHEST_H_10H                  = 202179,
-    GO_CAPITAN_CHEST_H_25H                  = 202180,
 
     // Deathbringer Saurfang
     GO_SAURFANG_S_DOOR                      = 201825,
@@ -391,17 +340,13 @@ enum GameObjectsIds
     GO_DOODAD_ICECROWN_ROOSTPORTCULLIS_02   = 201381,
     GO_DOODAD_ICECROWN_ROOSTPORTCULLIS_03   = 201382,
     GO_DOODAD_ICECROWN_ROOSTPORTCULLIS_04   = 201383,
-    GO_CACHE_OF_THE_DREAMWALKER_10N         = 201959,
-    GO_CACHE_OF_THE_DREAMWALKER_25N         = 202339,
-    GO_CACHE_OF_THE_DREAMWALKER_10H         = 202338,
-    GO_CACHE_OF_THE_DREAMWALKER_25H         = 202340,
 
     // Sindragosa
     GO_SINDRAGOSA_ENTRANCE_DOOR             = 201373,
     GO_SINDRAGOSA_SHORTCUT_ENTRANCE_DOOR    = 201369,
     GO_SINDRAGOSA_SHORTCUT_EXIT_DOOR        = 201379,
     GO_ICE_WALL                             = 202396,
-    GO_ICE_BLOCK                            = 201722,
+    GO_ICE_BLOCK                            = 188142,
     GO_SIGIL_OF_THE_FROSTWING               = 202181,
 
     // The Lich King
