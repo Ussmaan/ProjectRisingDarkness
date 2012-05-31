@@ -1564,6 +1564,7 @@ class instance_icecrown_citadel : public InstanceMapScript
             bool IsOozeDanceEligible;
             bool IsNauseaEligible;
             bool IsOrbWhispererEligible;
+            bool isPrepared;
             uint64 SindragosasWardGUID;
         };
 
