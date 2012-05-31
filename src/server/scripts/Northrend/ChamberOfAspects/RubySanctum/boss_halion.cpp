@@ -1561,10 +1561,11 @@ class spell_halion_twilight_cutter : public SpellScriptLoader
         }
 };
 
+
 class go_halion_portal : public GameObjectScript
 {
 public:
-    go_beacon_of_light() : GameObjectScript("go_halion_portal") { }
+    go_halion_portal() : GameObjectScript("go_halion_portal") { }
 
     bool OnGossipHello(Player* player, GameObject* go)
     {
