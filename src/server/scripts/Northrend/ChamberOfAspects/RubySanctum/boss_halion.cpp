@@ -1721,7 +1721,6 @@ class spell_halion_summon_exit_portals : public SpellScriptLoader
     public:
         spell_halion_summon_exit_portals() : SpellScriptLoader("spell_halion_summon_exit_portals") { }
 
-<<<<<<< HEAD
         class spell_halion_summon_exit_portals_SpellScript : public SpellScript
         {
             PrepareSpellScript(spell_halion_summon_exit_portals_SpellScript);
@@ -1750,14 +1749,6 @@ class spell_halion_summon_exit_portals : public SpellScriptLoader
         {
             return new spell_halion_summon_exit_portals_SpellScript();
         }
-=======
-    bool OnGossipHello(Player* player, GameObject* go)
-    {
-        go->CastSpell(player, 74807);
-        go->SetGoState(GO_STATE_READY);
-        return true;
-    }
->>>>>>> eb44cbe8d71c2340aa96677c52c95e39ee7d8911
 };
 
 void AddSC_boss_halion()
