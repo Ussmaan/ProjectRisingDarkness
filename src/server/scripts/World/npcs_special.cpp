@@ -4664,6 +4664,7 @@ public:
             DoCast(killer, SPELL_WICKERMAN_GUARDIAN_EMBER, true);
         }
     };
+};
 /*######
 ## npc_generic_harpoon_cannon
 ######*/
