@@ -1450,7 +1450,7 @@ class spell_halion_marks : public SpellScriptLoader
             //! See spell_halion_combustion_consumption_AuraScript::OnRemove
             void BeforeDispel(DispelInfo* dispelData)
             {
-                Unit* dispelledUnit = dispelData->GetDispelled();
+                Unit* dispelledUnit = dispelData->GetDispeller();
                 // Prevent any stack from being removed at this point.
                 dispelData->SetRemovedCharges(0);
 
