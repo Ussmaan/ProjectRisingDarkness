@@ -328,7 +328,7 @@ class boss_malygos : public CreatureScript
                     {
                         _EnterCombat();
                         me->SetInCombatWithZone();
-                        me->GetMotionMaster()->MoveLand(POINT_START, Locations[0], 12.0f);
+                        me->GetMotionMaster()->MoveLand(POINT_START, Locations[0]);
 
                         while (Creature* dragon = me->FindNearestCreature(NPC_WYRMREST_SKYTALON, 250.0f))
                             dragon->DespawnOrUnsummon();
@@ -751,7 +751,7 @@ class boss_malygos : public CreatureScript
                             SparkMovement(false);
                             me->SetCanFly(true);
                             me->SetReactState(REACT_PASSIVE);
-                            me->GetMotionMaster()->MoveTakeoff(POINT_VORTEX, Locations[1], 10.0f);
+                            me->GetMotionMaster()->MoveTakeoff(POINT_VORTEX, Locations[1]);
                             events.CancelEvent(EVENT_STORM);
                             events.CancelEvent(EVENT_SPARK);
                             events.CancelEvent(EVENT_BREATH);
@@ -762,7 +762,7 @@ class boss_malygos : public CreatureScript
                             events.ScheduleEvent(EVENT_VORTEXFLYDOWN, 12*IN_MILLISECONDS);
                             break;
                         case EVENT_VORTEXFLYDOWN:
-                            me->GetMotionMaster()->MoveLand(POINT_FLYDOWN, Locations[5], 8.0f);
+                            me->GetMotionMaster()->MoveLand(POINT_FLYDOWN, Locations[5]);
                             phase = PHASE_IDLE;
                             break;
                         case EVENT_ENRAGE:
@@ -870,7 +870,7 @@ class boss_malygos : public CreatureScript
                         DoScriptText(SAY_PHASE1_END, me);
                         me->SetCanFly(true);
                         me->SetReactState(REACT_PASSIVE);
-                        me->GetMotionMaster()->MoveTakeoff(POINT_PHASE_2, Locations[3], 2.5f);
+                        me->GetMotionMaster()->MoveTakeoff(POINT_PHASE_2, Locations[3]);
                         events.CancelEvent(EVENT_STORM);
                         events.CancelEvent(EVENT_SPARK);
                         events.CancelEvent(EVENT_BREATH);
