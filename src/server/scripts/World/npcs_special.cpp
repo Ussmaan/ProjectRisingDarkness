@@ -4664,6 +4664,29 @@ public:
             DoCast(killer, SPELL_WICKERMAN_GUARDIAN_EMBER, true);
         }
     };
+/*######
+## npc_generic_harpoon_cannon
+######*/
+
+class npc_generic_harpoon_cannon : public CreatureScript
+{
+public:
+    npc_generic_harpoon_cannon() : CreatureScript("npc_generic_harpoon_cannon") { }
+
+    struct npc_generic_harpoon_cannonAI : public ScriptedAI
+    {
+        npc_generic_harpoon_cannonAI(Creature* creature) : ScriptedAI(creature) {}
+
+        void Reset()
+        {
+            me->SetUnitMovementFlags(MOVEMENTFLAG_ROOT);
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_generic_harpoon_cannonAI(creature);
+    }
 };
 
 void AddSC_npcs_special()
@@ -4713,4 +4736,5 @@ void AddSC_npcs_special()
     new npc_headless_horseman_fire();
     new npc_shade_of_the_horseman();
     new npc_wickerman_guardian;
+    new npc_generic_harpoon_cannon();
 }
