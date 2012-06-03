@@ -1167,8 +1167,11 @@ public:
 
         player->CLOSE_GOSSIP_MENU();
         return true;
-=======
-## Quest Strengthen the Ancients (12096|12092)
+    }
+};
+
+/*### 
+Quest Strengthen the Ancients (12096|12092)
 ######*/
 
 enum StrengthenAncientsMisc
@@ -1261,7 +1264,6 @@ public:
     SpellScript* GetSpellScript() const
     {
         return new spell_q12096_q12092_bark_SpellScript();
->>>>>>> tc/master
     }
 };
 
