@@ -1569,6 +1569,7 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go)
     {
+        go->CastSpell(player, 74808);
         go->SetGoState(GO_STATE_READY);
         return true;
     }
