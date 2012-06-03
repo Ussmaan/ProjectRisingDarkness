@@ -1,19 +1,19 @@
 /*
-* Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
-*
-* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU General Public License as published by the
-* Free Software Foundation; either version 2 of the License, or (at your
-* option) any later version.
-*
-* This program is distributed in the hope that it will be useful, but WITHOUT
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-* more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
@@ -23,55 +23,47 @@
 
 enum Texts
 {
-    SAY_BALTHARUS_INTRO = 0, // Your power wanes, ancient one.... Soon you will join your friends.
-    SAY_AGGRO = 1, // Ah, the entertainment has arrived.
-    SAY_KILL = 2, // Baltharus leaves no survivors! - This world has enough heroes.
-    SAY_CLONE = 3, // Twice the pain and half the fun.
-    SAY_DEATH = 4, // I... didn't see that coming....
+    SAY_BALTHARUS_INTRO         = 0,    // Your power wanes, ancient one.... Soon you will join your friends.
+    SAY_AGGRO                   = 1,    // Ah, the entertainment has arrived.
+    SAY_KILL                    = 2,    // Baltharus leaves no survivors! - This world has enough heroes.
+    SAY_CLONE                   = 3,    // Twice the pain and half the fun.
+    SAY_DEATH                   = 4,    // I... didn't see that coming....
 };
 
 enum Spells
 {
-    SPELL_BARRIER_CHANNEL = 76221,
-    SPELL_ENERVATING_BRAND = 74502,
-    SPELL_SIPHONED_MIGHT = 74507,
-    SPELL_CLEAVE = 40504,
-    SPELL_BLADE_TEMPEST = 75125,
-    SPELL_CLONE = 74511,
-    SPELL_REPELLING_WAVE = 74509,
-    SPELL_CLEAR_DEBUFFS = 34098,
-    SPELL_SPAWN_EFFECT = 64195,
+    SPELL_BARRIER_CHANNEL       = 76221,
+    SPELL_ENERVATING_BRAND      = 74502,
+    SPELL_SIPHONED_MIGHT        = 74507,
+    SPELL_CLEAVE                = 40504,
+    SPELL_BLADE_TEMPEST         = 75125,
+    SPELL_CLONE                 = 74511,
+    SPELL_REPELLING_WAVE        = 74509,
+    SPELL_CLEAR_DEBUFFS         = 34098,
+    SPELL_SPAWN_EFFECT          = 64195,
 };
 
 enum Events
 {
-    EVENT_BLADE_TEMPEST = 1,
-    EVENT_CLEAVE = 2,
-    EVENT_ENERVATING_BRAND = 3,
-    EVENT_INTRO_TALK = 4,
-    EVENT_OOC_CHANNEL = 5,
+    EVENT_BLADE_TEMPEST         = 1,
+    EVENT_CLEAVE                = 2,
+    EVENT_ENERVATING_BRAND      = 3,
+    EVENT_INTRO_TALK            = 4,
+    EVENT_OOC_CHANNEL           = 5,
 };
 
 enum Actions
 {
-    ACTION_CLONE = 1,
+    ACTION_CLONE                = 1,
 };
 
 enum Phases
 {
-    PHASE_ALL = 0,
-    PHASE_INTRO = 1,
-    PHASE_COMBAT = 2,
+    PHASE_ALL       = 0,
+    PHASE_INTRO     = 1,
+    PHASE_COMBAT    = 2,
 
-    PHASE_INTRO_MASK = 1 << PHASE_INTRO,
-};
-
-enum Equipment
-{
-    EQUIP_MAIN           = 49888,
-    EQUIP_OFFHAND        = EQUIP_NO_CHANGE,
-    EQUIP_RANGED         = EQUIP_NO_CHANGE,
-    EQUIP_DONE           = EQUIP_NO_CHANGE,
+    PHASE_INTRO_MASK    = 1 << PHASE_INTRO,
 };
 
 class boss_baltharus_the_warborn : public CreatureScript
@@ -122,7 +114,6 @@ class boss_baltharus_the_warborn : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
-                SetEquipmentSlots(false, EQUIP_MAIN, EQUIP_OFFHAND, EQUIP_RANGED);
                 me->InterruptNonMeleeSpells(false);
                 _EnterCombat();
                 events.Reset();
@@ -154,7 +145,7 @@ class boss_baltharus_the_warborn : public CreatureScript
                 summon->CastSpell(summon, SPELL_SPAWN_EFFECT, true);
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& damage)
+            void DamageTaken(Unit* /*attacker*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
                 {
@@ -243,7 +234,6 @@ class npc_baltharus_the_warborn_clone : public CreatureScript
 
             void EnterCombat(Unit* /*who*/)
             {
-                SetEquipmentSlots(false, EQUIP_MAIN, EQUIP_OFFHAND, EQUIP_RANGED);
                 DoZoneInCombat();
                 _events.Reset();
                 _events.ScheduleEvent(EVENT_CLEAVE, urand(5000, 10000));
@@ -251,7 +241,7 @@ class npc_baltharus_the_warborn_clone : public CreatureScript
                 _events.ScheduleEvent(EVENT_ENERVATING_BRAND, urand(10000, 15000));
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& damage)
+            void DamageTaken(Unit* /*attacker*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 // Setting DATA_BALTHARUS_SHARED_HEALTH to 0 when killed would bug the boss.
                 if (_instance && me->GetHealth() > damage)
