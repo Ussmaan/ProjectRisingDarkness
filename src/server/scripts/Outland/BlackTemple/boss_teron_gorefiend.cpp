@@ -159,7 +159,7 @@ public:
         }
 
     /* Comment it out for now. NOTE TO FUTURE DEV: UNCOMMENT THIS OUT ONLY AFTER MIND CONTROL IS IMPLEMENTED
-        void DamageTaken(Unit* done_by, uint32 &damage, SpellInfo const* /*spellInfo*/)
+        void DamageTaken(Unit* done_by, uint32 &damage, SpellInfo const* spellInfo)
         {
             if (done_by->GetGUID() != GhostGUID)
             damage = 0;                                         // Only the ghost can deal damage.
