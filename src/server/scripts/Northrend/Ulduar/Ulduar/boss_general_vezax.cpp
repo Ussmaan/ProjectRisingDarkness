@@ -361,7 +361,7 @@ class mob_saronit_vapor : public CreatureScript
                 _randomMoveTimer = urand(5000, 7500);
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {

@@ -64,7 +64,7 @@ public:
             _JustDied();
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32& damage, SpellInfo const* /*spellInfo*/)
         {
             if (me->GetHealth() <= damage)
                 DoCast(me, SPELL_SUMMON_SPIRE_SPIDERLING, true);

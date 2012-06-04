@@ -206,7 +206,7 @@ public:
             ScriptedAI::MoveInLineOfSight(who);
         }
 		
-        void DamageTaken(Unit* /*pDoneBy*/, uint32 & /*uiDamage*/)
+        void DamageTaken(Unit* /*pDoneBy*/, uint32 & /*uiDamage*/, SpellInfo const* /*spellInfo*/)
         {
             me->SetReactState(REACT_AGGRESSIVE);
         }

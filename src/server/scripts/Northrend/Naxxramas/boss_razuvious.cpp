@@ -57,7 +57,7 @@ public:
     {
         boss_razuviousAI(Creature* creature) : BossAI(creature, BOSS_RAZUVIOUS) {}
 
-        void DamageTaken(Unit* pDone_by, uint32& uiDamage)
+        void DamageTaken(Unit* pDone_by, uint32& uiDamage, SpellInfo const* /*spellInfo*/)
         {
             // Damage done by the controlled Death Knight understudies should also count toward damage done by players
             if (pDone_by->GetTypeId() == TYPEID_UNIT && (pDone_by->GetEntry() == 16803 || pDone_by->GetEntry() == 29941))

@@ -403,7 +403,7 @@ public:
             AuraTimer = 5000;
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage >= me->GetHealth())
             {
@@ -521,7 +521,7 @@ public:
             me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_CONFUSE, true);
         }
 
-        void DamageTaken(Unit* done_by, uint32 &damage)
+        void DamageTaken(Unit* done_by, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (done_by == me)
                 return;

@@ -136,7 +136,7 @@ class boss_halazzi : public CreatureScript
                     LynxGUID = summon->GetGUID();
             }
 
-            void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+            void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth() && Phase != PHASE_ENRAGE)
                     damage = 0;
@@ -363,7 +363,7 @@ class mob_halazzi_lynx : public CreatureScript
                 shredder_timer = 4000;
             }
 
-            void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+            void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                     damage = 0;

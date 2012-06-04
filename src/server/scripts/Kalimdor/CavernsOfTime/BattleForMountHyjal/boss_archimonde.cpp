@@ -108,7 +108,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) {}
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             damage = 0;
         }
@@ -152,7 +152,7 @@ public:
         void MoveInLineOfSight(Unit* /*who*/) {}
         void EnterCombat(Unit* /*who*/) {}
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             damage = 0;
         }
@@ -194,7 +194,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) {}
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             damage = 0;
         }

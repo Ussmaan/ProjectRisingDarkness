@@ -270,7 +270,7 @@ class npc_ice_block : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* who, uint32& /*damage*/)
+            void DamageTaken(Unit* who, uint32& /*damage*/, SpellInfo const* /*spellInfo*/)
             {
                 if (Creature* Helper = ObjectAccessor::GetCreature(*me, targetGUID))
                 {
@@ -352,7 +352,7 @@ class boss_hodir : public CreatureScript
                     DoScriptText(RAND(SAY_SLAY_1, SAY_SLAY_2), me);
             }
 
-            void DamageTaken(Unit* /*who*/, uint32& damage)
+            void DamageTaken(Unit* /*who*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {

@@ -162,7 +162,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit* done_by, uint32 &damage)
+        void DamageTaken(Unit* done_by, uint32& damage, SpellInfo const* /*spellInfo*/)
         {
             if (done_by->GetGUID() != malchezaar)
                 damage = 0;

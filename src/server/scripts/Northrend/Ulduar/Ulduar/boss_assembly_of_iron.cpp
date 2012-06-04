@@ -272,7 +272,7 @@ class boss_steelbreaker : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {
@@ -556,7 +556,7 @@ class boss_runemaster_molgeim : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {
@@ -880,7 +880,7 @@ class boss_stormcaller_brundir : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {

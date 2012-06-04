@@ -359,7 +359,7 @@ class boss_valithria_dreamwalker : public CreatureScript
                         archmage->AI()->DoZoneInCombat();   // call EnterCombat on one of them, that will make it all start
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& damage)
+            void DamageTaken(Unit* /*attacker*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (me->HealthBelowPctDamaged(25, damage))
                 {

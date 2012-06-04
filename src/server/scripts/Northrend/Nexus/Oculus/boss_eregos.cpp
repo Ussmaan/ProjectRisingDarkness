@@ -119,7 +119,7 @@ public:
         }
 
 
-        void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/)
+        void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/, SpellInfo const* /*spellInfo*/)
         {
             if (!me->GetMap()->IsHeroic())
                 return;

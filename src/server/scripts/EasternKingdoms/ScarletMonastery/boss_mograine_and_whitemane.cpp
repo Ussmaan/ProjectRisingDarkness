@@ -123,7 +123,7 @@ public:
             DoScriptText(SAY_MO_KILL, me);
         }
 
-        void DamageTaken(Unit* /*doneBy*/, uint32 &damage)
+        void DamageTaken(Unit* /*doneBy*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage < me->GetHealth() || _bHasDied || _bFakeDeath)
                 return;

@@ -303,7 +303,7 @@ public:
             DoCast(who, SPELL_SNOBOLLED);
         }
 
-        void DamageTaken(Unit* pDoneBy, uint32 &uiDamage)
+        void DamageTaken(Unit* pDoneBy, uint32 &uiDamage, SpellInfo const* /*spellInfo*/)
         {
             if (pDoneBy->GetGUID()==m_uiTargetGUID)
                 uiDamage = 0;

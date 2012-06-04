@@ -139,7 +139,7 @@ public:
                 instance->SetData(DATA_INGVAR_EVENT, NOT_STARTED);
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage >= me->GetHealth() && !bIsUndead)
             {

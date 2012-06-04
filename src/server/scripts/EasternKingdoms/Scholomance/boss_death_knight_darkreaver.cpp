@@ -43,7 +43,7 @@ public:
         {
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (me->GetHealth() <= damage)
                 DoCast(me, 23261, true);   //Summon Darkreaver's Fallen Charger

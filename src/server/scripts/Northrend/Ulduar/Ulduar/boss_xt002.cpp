@@ -487,7 +487,7 @@ class mob_xt002_heart : public CreatureScript
                 me->RemoveAurasDueToSpell(SPELL_EXPOSED_HEART);
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (Creature* XT002 = me->GetCreature(*me, _instance ? _instance->GetData64(BOSS_XT002) : 0))
                     if (XT002->AI())
@@ -693,7 +693,7 @@ class mob_boombot : public CreatureScript
                     me->GetMotionMaster()->MoveFollow(xt002, 0.0f, 0.0f);
             }
 
-            void DamageTaken(Unit* /*who*/, uint32& damage)
+            void DamageTaken(Unit* /*who*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= (me->GetHealth() - me->GetMaxHealth() * 0.5f) && !_boomed)
                 {

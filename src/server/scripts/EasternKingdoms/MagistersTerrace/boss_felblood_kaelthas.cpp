@@ -162,7 +162,7 @@ public:
                     escapeOrb->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage > me->GetHealth())
                 RemoveGravityLapse(); // Remove Gravity Lapse so that players fall to ground if they kill him when in air.
@@ -511,7 +511,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) {}
 
-        void DamageTaken(Unit* /*killer*/, uint32 &damage)
+        void DamageTaken(Unit* /*killer*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage < me->GetHealth())
                 return;

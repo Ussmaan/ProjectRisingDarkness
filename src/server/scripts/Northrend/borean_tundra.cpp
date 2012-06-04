@@ -524,7 +524,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit* /*pDone_by*/, uint32& /*uiDamage*/)
+        void DamageTaken(Unit* /*pDone_by*/, uint32& /*uiDamage*/, SpellInfo const* /*spellInfo*/)
         {
             DoCast(me, SPELL_DROP_CRATE, true);
         }

@@ -311,7 +311,7 @@ public:
                 DoMeleeAttackIfReady();
         }
 
-        void DamageTaken(Unit* /*pDoneBy*/, uint32& damage)
+        void DamageTaken(Unit* /*pDoneBy*/, uint32& damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage > me->GetHealth() && uiPhase <= PHASE_SKELETON)
             {

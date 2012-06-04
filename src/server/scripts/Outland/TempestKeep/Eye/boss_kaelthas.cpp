@@ -208,7 +208,7 @@ struct advisorbase_ai : public ScriptedAI
         DelayRes_Timer = 2000;
     }
 
-    void DamageTaken(Unit* killer, uint32 &damage)
+    void DamageTaken(Unit* killer, uint32 &damage, SpellInfo const* /*spellInfo*/)
     {
         if (damage < me->GetHealth())
             return;

@@ -94,7 +94,7 @@ public:
             return 100*(me->GetHealth()-damage)/me->GetMaxHealth();
         }
 
-        void DamageTaken(Unit* /*pAttacker*/, uint32 &damage)
+        void DamageTaken(Unit* /*pAttacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
                 damage = 0;

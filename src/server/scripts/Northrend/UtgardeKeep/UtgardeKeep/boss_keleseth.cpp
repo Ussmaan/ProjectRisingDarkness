@@ -222,7 +222,7 @@ public:
             DoCast(SPELL_BONE_ARMOR);
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage >= me->GetHealth())
             {

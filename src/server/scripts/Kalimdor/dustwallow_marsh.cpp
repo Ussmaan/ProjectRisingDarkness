@@ -467,7 +467,7 @@ public:
             AttackStart(pAttacker);
         }
 
-        void DamageTaken(Unit* pDoneBy, uint32 &Damage)
+        void DamageTaken(Unit* pDoneBy, uint32 &Damage, SpellInfo const* /*spellInfo*/)
         {
             if (Damage > me->GetHealth() || me->HealthBelowPctDamaged(20, Damage))
             {

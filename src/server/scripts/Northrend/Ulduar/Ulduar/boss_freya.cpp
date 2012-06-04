@@ -321,7 +321,7 @@ class boss_freya : public CreatureScript
                 DoScriptText(RAND(SAY_SLAY_1, SAY_SLAY_2), me);
             }
 
-            void DamageTaken(Unit* who, uint32& damage)
+            void DamageTaken(Unit* who, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {
@@ -853,7 +853,7 @@ class boss_elder_stonebark : public CreatureScript
                     DoScriptText(SAY_STONEBARK_AGGRO, me);
             }
 
-            void DamageTaken(Unit* who, uint32& damage)
+            void DamageTaken(Unit* who, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (who == me)
                     return;

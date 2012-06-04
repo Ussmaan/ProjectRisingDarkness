@@ -117,7 +117,7 @@ class mob_firesworn : public CreatureScript
                 immolateTimer = 4000;                              //These times are probably wrong
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& damage)
+            void DamageTaken(Unit* /*attacker*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 uint32 const health10pct = me->CountPctFromMaxHealth(10);
                 uint32 health = me->GetHealth();

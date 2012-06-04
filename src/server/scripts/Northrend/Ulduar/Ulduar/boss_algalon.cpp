@@ -348,7 +348,7 @@ class boss_algalon : public CreatureScript
                }
             }
 
-            void DamageTaken(Unit * /*who*/, uint32 &Damage)
+            void DamageTaken(Unit * /*who*/, uint32 &Damage, SpellInfo const* /*spellInfo*/)
             {
                 if(Damage > me->GetHealth())
                     Damage = me->GetHealth() - 1;
@@ -927,7 +927,7 @@ class mob_collapsing_star : public CreatureScript
                 Damage = me->GetMaxHealth()/100;
                 me->GetMotionMaster()->MoveRandom(15.0f);
             }
-            void DamageTaken(Unit * /*Who*/, uint32 &Damage)
+            void DamageTaken(Unit * /*Who*/, uint32 &Damage, SpellInfo const* /*spellInfo*/)
             {
                 if(Damage > me->GetHealth())
                 {

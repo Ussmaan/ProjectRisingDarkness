@@ -347,7 +347,7 @@ class boss_sindragosa : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/)
+            void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/, SpellInfo const* /*spellInfo*/)
             {
                 if (!_isThirdPhase && !HealthAbovePct(35))
                 {

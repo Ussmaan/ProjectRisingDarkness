@@ -586,7 +586,7 @@ class mob_frost_sphere : public CreatureScript
                 DoCast(SPELL_FROST_SPHERE);
             }
 
-            void DamageTaken(Unit* /*who*/, uint32& damage)
+            void DamageTaken(Unit* /*who*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (me->GetHealth() <= damage)
                 {
@@ -674,7 +674,7 @@ public:
             me->TauntApply(who);
         }
 
-        void DamageTaken(Unit* /*who*/, uint32& uiDamage)
+        void DamageTaken(Unit* /*who*/, uint32& uiDamage, SpellInfo const* /*spellInfo*/)
         {
             uiDamage = 0;
         }

@@ -170,7 +170,7 @@ class boss_drakkari_colossus : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& damage)
+            void DamageTaken(Unit* /*attacker*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC))
                     damage = 0;
@@ -324,7 +324,7 @@ class boss_drakkari_elemental : public CreatureScript
                 }
            }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& damage)
+            void DamageTaken(Unit* /*attacker*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (HealthBelowPct(50) && instance)
                 {

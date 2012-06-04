@@ -226,7 +226,7 @@ public:
             Talk(SAY_COMMON_KILL);
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32 & damage)
+        void DamageTaken(Unit* /*attacker*/, uint32 & damage, SpellInfo const* /*spellInfo*/)
         {
             if(defeated)
             {
@@ -427,7 +427,7 @@ public:
             Talk(SAY_COMMON_KILL);
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32 & damage)
+        void DamageTaken(Unit* /*attacker*/, uint32 & damage, SpellInfo const* /*spellInfo*/)
         {
             if(defeated)
             {
@@ -659,7 +659,7 @@ public:
                     instance->SetData(MINION_ENCOUNTER, IN_PROGRESS);
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32 & damage)
+        void DamageTaken(Unit* /*attacker*/, uint32 & damage, SpellInfo const* /*spellInfo*/)
         {
             if(damage >= me->GetHealth() && !shieldCasted)
             {

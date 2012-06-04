@@ -578,7 +578,7 @@ public:
                 summon->CastSpell(summon, SPELL_LIGHTNING_DESTRUCTION, true);
         }
 
-        void DamageTaken(Unit* attacker, uint32 &damage)
+        void DamageTaken(Unit* attacker, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage >= me->GetHealth())
             {
@@ -741,7 +741,7 @@ class npc_thorim_arena_phase : public CreatureScript
                 return (_IsInArena == IN_ARENA(who));
             }
 
-            void DamageTaken(Unit* attacker, uint32 &damage)
+            void DamageTaken(Unit* attacker, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (!isOnSameSide(attacker))
                     damage = 0;

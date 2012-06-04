@@ -1089,7 +1089,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage);
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/);
 
         void JustDied(Unit* /*killer*/)
         {
@@ -1170,7 +1170,7 @@ public:
             me->DespawnOrUnsummon();
         }
 
-        void DamageTaken(Unit* /*done_by*/, uint32 &damage)
+        void DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage < me->GetHealth())
                 return;
@@ -1442,7 +1442,7 @@ void boss_julianne::boss_julianneAI::UpdateAI(const uint32 diff)
     DoMeleeAttackIfReady();
 }
 
-void boss_julianne::boss_julianneAI::DamageTaken(Unit* /*done_by*/, uint32 &damage)
+void boss_julianne::boss_julianneAI::DamageTaken(Unit* /*done_by*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
 {
     if (damage < me->GetHealth())
         return;

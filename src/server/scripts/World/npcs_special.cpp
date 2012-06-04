@@ -2141,7 +2141,7 @@ public:
             Reset();
         }
 
-        void DamageTaken(Unit* /*doneBy*/, uint32& damage)
+        void DamageTaken(Unit* /*doneBy*/, uint32& damage, SpellInfo const* /*spellInfo*/)
         {
             resetTimer = 5000;
             damage = 0;
@@ -2204,7 +2204,7 @@ class npc_shadowfiend : public CreatureScript
         {
             npc_shadowfiendAI(Creature* creature) : ScriptedAI(creature) {}
 
-            void DamageTaken(Unit* /*killer*/, uint32& damage)
+            void DamageTaken(Unit* /*killer*/, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (me->isSummon())
                     if (Unit* owner = me->ToTempSummon()->GetSummoner())

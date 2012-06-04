@@ -1196,7 +1196,7 @@ class npc_power_spark : public CreatureScript
                 }
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32 &damage)
+            void DamageTaken(Unit* /*attacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
             {
                 if (damage >= me->GetHealth())
                 {

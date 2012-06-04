@@ -721,7 +721,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit* dealer, uint32 &damage)
+        void DamageTaken(Unit* dealer, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if(dealer->GetEntry() == ENTRY_GUARDIAN_OF_YOGG_SARON)
             {
@@ -2042,7 +2042,7 @@ public:
             me->SetCanFly(true);
         }
 
-        void DamageTaken(Unit* /*dealer*/, uint32 &damage)
+        void DamageTaken(Unit* /*dealer*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if(damage > me->GetHealth())
                 damage = me->GetHealth()-1;
@@ -2212,7 +2212,7 @@ public:
         {
         }
 
-        void DamageTaken(Unit* attacker, uint32 &damage)
+        void DamageTaken(Unit* attacker, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if(attacker->ToPlayer())
                 me->CastCustomSpell(SPELL_GRIM_REPRISAL_DAMAGE, SPELLVALUE_BASE_POINT0, int32(damage *0.60), attacker,true);
@@ -2287,7 +2287,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit* dealer, uint32 &damage)
+        void DamageTaken(Unit* dealer, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if(dealer->GetGUID() == me->GetGUID())
                 return;

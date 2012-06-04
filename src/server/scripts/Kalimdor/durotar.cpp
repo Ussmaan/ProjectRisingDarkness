@@ -269,7 +269,7 @@ class npc_tiger_matriarch : public CreatureScript
                 me->DespawnOrUnsummon();
             }
 
-            void DamageTaken(Unit* attacker, uint32& damage)
+            void DamageTaken(Unit* attacker, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (!attacker->isSummon())
                     return;

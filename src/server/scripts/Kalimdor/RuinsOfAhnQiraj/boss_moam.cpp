@@ -70,7 +70,7 @@ class boss_moam : public CreatureScript
                 //events.ScheduleEvent(EVENT_WIDE_SLASH, 11000);
             }
 
-            void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/)
+            void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/, SpellInfo const* /*spellInfo*/)
             {
                 if (!_isStonePhase && HealthBelowPct(45))
                 {

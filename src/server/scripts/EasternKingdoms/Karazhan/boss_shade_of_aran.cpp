@@ -479,7 +479,7 @@ public:
                 DoMeleeAttackIfReady();
         }
 
-        void DamageTaken(Unit* /*pAttacker*/, uint32 &damage)
+        void DamageTaken(Unit* /*pAttacker*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (!DrinkInturrupted && Drinking && damage)
                 DrinkInturrupted = true;

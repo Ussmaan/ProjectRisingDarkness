@@ -110,7 +110,7 @@ public:
             AttackStart(pAttacker);
         }
 
-        void DamageTaken(Unit* /*pDoneBy*/, uint32& uiDamage)
+        void DamageTaken(Unit* /*pDoneBy*/, uint32& uiDamage, SpellInfo const* /*spellInfo*/)
         {
             if (HealthBelowPct(20))
             {

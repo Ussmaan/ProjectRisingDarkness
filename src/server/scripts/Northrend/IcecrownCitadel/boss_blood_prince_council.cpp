@@ -461,7 +461,7 @@ class boss_prince_keleseth_icc : public CreatureScript
                     instance->SetData(DATA_ORB_WHISPERER_ACHIEVEMENT, uint32(false));
             }
 
-            void DamageTaken(Unit* attacker, uint32& damage)
+            void DamageTaken(Unit* attacker, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (!_isEmpowered)
                 {
@@ -679,7 +679,7 @@ class boss_prince_taldaram_icc : public CreatureScript
                     instance->SetData(DATA_ORB_WHISPERER_ACHIEVEMENT, uint32(false));
             }
 
-            void DamageTaken(Unit* attacker, uint32& damage)
+            void DamageTaken(Unit* attacker, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (!_isEmpowered)
                 {
@@ -917,7 +917,7 @@ class boss_prince_valanar_icc : public CreatureScript
                     instance->SetData(DATA_ORB_WHISPERER_ACHIEVEMENT, uint32(false));
             }
 
-            void DamageTaken(Unit* attacker, uint32& damage)
+            void DamageTaken(Unit* attacker, uint32& damage, SpellInfo const* /*spellInfo*/)
             {
                 if (!_isEmpowered)
                 {
@@ -1321,7 +1321,7 @@ class npc_dark_nucleus : public CreatureScript
                 ScriptedAI::MoveInLineOfSight(who);
             }
 
-            void DamageTaken(Unit* attacker, uint32& /*damage*/)
+            void DamageTaken(Unit* attacker, uint32& /*damage*/, SpellInfo const* /*spellInfo*/)
             {
                 if (attacker == me || attacker == me->getVictim())
                     return;

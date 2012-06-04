@@ -119,7 +119,7 @@ public:
                 instance->SetData(DATA_MAL_GANIS_EVENT, IN_PROGRESS);
         }
 
-        void DamageTaken(Unit* done_by, uint32 &damage)
+        void DamageTaken(Unit* done_by, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (damage >= me->GetHealth() && done_by != me)
                 damage = me->GetHealth()-1;

@@ -948,7 +948,7 @@ public:
                     }
         }
 
-        void DamageTaken(Unit* /*who*/, uint32 &damage)
+        void DamageTaken(Unit* /*who*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (phase == PHASE_LEVIATHAN_SOLO)
                 if (damage >= me->GetHealth())
@@ -1331,7 +1331,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit* /*who*/, uint32 &damage)
+        void DamageTaken(Unit* /*who*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (phase == PHASE_VX001_SOLO)
                 if (damage >= me->GetHealth())
@@ -1753,7 +1753,7 @@ public:
                 summon->CastSpell(summon, SPELL_EMERGENCY_MODE, true);
         }
 
-        void DamageTaken(Unit* /*who*/, uint32 &damage)
+        void DamageTaken(Unit* /*who*/, uint32 &damage, SpellInfo const* /*spellInfo*/)
         {
             if (phase == PHASE_AERIAL_SOLO)
                 if (damage >= me->GetHealth())
