@@ -137,7 +137,8 @@ enum HorWorldStates
     WORLD_STATE_HOR_WAVE_COUNT = 4882,
 };
 
-// Common actions from Instance Script to Boss Script enum Actions
+// Common actions from Instance Script to Boss Script 
+enum Actions
 {
     ACTION_ENTER_COMBAT,
 };
