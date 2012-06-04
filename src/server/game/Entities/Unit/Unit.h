@@ -832,13 +832,15 @@ class DispelInfo
 {
 private:
     Unit* const m_dispeller;
+    Unit* const m_dispelled;
     uint32 const m_dispellerSpellId;
     uint8 m_chargesRemoved;
 public:
-    explicit DispelInfo(Unit* _dispeller, uint32 _dispellerSpellId, uint8 _chargesRemoved) :
-    m_dispeller(_dispeller), m_dispellerSpellId(_dispellerSpellId), m_chargesRemoved(_chargesRemoved) {}
+    explicit DispelInfo(Unit* _dispeller, Unit* dispelled, uint32 _dispellerSpellId, uint8 _chargesRemoved) :
+    m_dispeller(_dispeller), m_dispelled(dispelled), m_dispellerSpellId(_dispellerSpellId), m_chargesRemoved(_chargesRemoved) {}
 
     Unit* GetDispeller() { return m_dispeller; }
+    Unit* GetDispelled() { return m_dispelled; }
     uint32 GetDispellerSpellId() { return m_dispellerSpellId; }
     uint8 GetRemovedCharges() { return m_chargesRemoved; }
     void SetRemovedCharges(uint8 amount)

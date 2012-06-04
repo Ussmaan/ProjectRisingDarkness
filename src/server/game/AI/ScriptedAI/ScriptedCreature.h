@@ -87,7 +87,7 @@ struct ScriptedAI : public CreatureAI
 
     // Called at any Damage from any attacker (before damage apply)
     void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/) {}
-
+    void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/, SpellInfo const* /*spellProto*/) {}
     //Called at World update tick
     virtual void UpdateAI(uint32 const diff);
 
