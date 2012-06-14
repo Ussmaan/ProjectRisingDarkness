@@ -2484,12 +2484,12 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spell)
     // Chance resist debuff
     if (!spell->IsPositive())
     {
-        bool bNegativeAura = false;
+        bool bNegativeAura = true;
         for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
         {
-            if (spell->Effects[i].ApplyAuraName != 0)
+            if (spell->Effects[i].ApplyAuraName == 0)
             {
-                bNegativeAura = true;
+                bNegativeAura = false;
                 break;
             }
         }
@@ -2916,9 +2916,11 @@ void Unit::SetCurrentCastedSpell(Spell* pSpell)
                     InterruptSpell(CURRENT_AUTOREPEAT_SPELL);
                 m_AutoRepeatFirstCast = true;
             }
-            AddUnitState(UNIT_STATE_CASTING);
-        } break;
+            if (pSpell->m_spellInfo->CalcCastTime(this) > 0)
+                AddUnitState(UNIT_STATE_CASTING);
 
+            break;
+        }
         case CURRENT_CHANNELED_SPELL:
         {
             // channel spells always break generic non-delayed and any channeled spells
@@ -2930,8 +2932,9 @@ void Unit::SetCurrentCastedSpell(Spell* pSpell)
                 m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo->Id != 75)
                 InterruptSpell(CURRENT_AUTOREPEAT_SPELL);
             AddUnitState(UNIT_STATE_CASTING);
-        } break;
 
+            break;
+        }
         case CURRENT_AUTOREPEAT_SPELL:
         {
             // only Auto Shoot does not break anything
@@ -2943,12 +2946,11 @@ void Unit::SetCurrentCastedSpell(Spell* pSpell)
             }
             // special action: set first cast flag
             m_AutoRepeatFirstCast = true;
-        } break;
 
+            break;
+        }
         default:
-        {
-            // other spell types don't break anything now
-        } break;
+            break; // other spell types don't break anything now
     }
 
     // current spell (if it is still here) may be safely deleted now
@@ -14549,6 +14551,11 @@ void Unit::ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, u
                         if (procSpell && (triggeredByAura->GetMiscValue() & procSpell->SchoolMask))         // School check
                             takeCharges = true;
                         break;
+                    case SPELL_AURA_SPELL_MAGNET:
+                        // Skip Melee hits and targets with magnet aura
+                        if (procSpell && (triggeredByAura->GetBase()->GetUnitOwner()->ToUnit() == ToUnit()))         // Magnet
+                            takeCharges = true;
+                        break;
                     case SPELL_AURA_MOD_POWER_COST_SCHOOL_PCT:
                     case SPELL_AURA_MOD_POWER_COST_SCHOOL:
                         // Skip melee hits and spells ws wrong school or zero cost
@@ -17585,6 +17592,7 @@ void Unit::SetInFront(Unit const* target)
 void Unit::SetFacingTo(float ori)
 {
     Movement::MoveSplineInit init(*this);
+    init.MoveTo(GetPositionX(), GetPositionY(), GetPositionZMinusOffset());
     init.SetFacing(ori);
     init.Launch();
 }
