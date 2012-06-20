@@ -37,14 +37,60 @@ enum WarlockSpells
     WARLOCK_DEMONIC_CIRCLE_SUMMON           = 48018,
     WARLOCK_DEMONIC_CIRCLE_TELEPORT         = 48020,
     WARLOCK_DEMONIC_CIRCLE_ALLOW_CAST       = 62388,
-    WARLOCK_FELHUNTER_SHADOWBITE_R1         = 54049,
-    WARLOCK_FELHUNTER_SHADOWBITE_R2         = 54050,
-    WARLOCK_FELHUNTER_SHADOWBITE_R3         = 54051,
-    WARLOCK_FELHUNTER_SHADOWBITE_R4         = 54052,
-    WARLOCK_FELHUNTER_SHADOWBITE_R5         = 54053,
-    WARLOCK_IMPROVED_FELHUNTER_R1           = 54037,
-    WARLOCK_IMPROVED_FELHUNTER_R2           = 54038,
-    WARLOCK_IMPROVED_FELHUNTER_EFFECT       = 54425,
+    WARLOCK_HAUNT                           = 48181,
+    WARLOCK_HAUNT_HEAL                      = 48210,
+    WARLOCK_UNSTABLE_AFFLICTION_DISPEL      = 31117,
+};
+
+class spell_warl_banish : public SpellScriptLoader
+{
+public:
+    spell_warl_banish() : SpellScriptLoader("spell_warl_banish") { }
+
+    class spell_warl_banish_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_warl_banish_SpellScript);
+
+        bool Load()
+        {
+            _removed = false;
+            return true;
+        }
+
+        void HandleBanish()
+        {
+            if (Unit* target = GetHitUnit())
+            {
+                if (target->GetAuraEffect(SPELL_AURA_SCHOOL_IMMUNITY, SPELLFAMILY_WARLOCK, 0, 0x08000000, 0))
+                {
+                    //No need to remove old aura since its removed due to not stack by current Banish aura
+                    PreventHitDefaultEffect(EFFECT_0);
+                    PreventHitDefaultEffect(EFFECT_1);
+                    PreventHitDefaultEffect(EFFECT_2);
+                    _removed = true;
+                }
+            }
+        }
+
+        void RemoveAura()
+        {
+            if (_removed)
+                PreventHitAura();
+        }
+
+        void Register()
+        {
+            BeforeHit += SpellHitFn(spell_warl_banish_SpellScript::HandleBanish);
+            AfterHit += SpellHitFn(spell_warl_banish_SpellScript::RemoveAura);
+        }
+
+        bool _removed;
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_warl_banish_SpellScript();
+    }
 };
 
 // 47193 Demonic Empowerment
@@ -480,130 +526,104 @@ class spell_warl_demonic_circle_teleport : public SpellScriptLoader
         }
 };
 
-// Shadow Bite
-class spell_warl_shadow_bite : public SpellScriptLoader
-{
-public:
-    spell_warl_shadow_bite() : SpellScriptLoader("spell_warl_shadow_bite") { }
-
-    class spell_warl_shadow_bite_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_warl_shadow_bite_SpellScript)
-        bool Validate(SpellInfo const * /*spellEntry*/)
-        {
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_FELHUNTER_SHADOWBITE_R1))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_FELHUNTER_SHADOWBITE_R2))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_FELHUNTER_SHADOWBITE_R3))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_FELHUNTER_SHADOWBITE_R4))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_FELHUNTER_SHADOWBITE_R5))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_IMPROVED_FELHUNTER_R1))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_IMPROVED_FELHUNTER_R2))
-                return false;
-            if (!sSpellMgr->GetSpellInfo(WARLOCK_IMPROVED_FELHUNTER_EFFECT))
-                return false;
-            return true;
-        }
-
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
-        {
-            //Unit *caster = GetCaster();
-            // Get DoTs on target by owner (15% increase by dot)
-            // need to get this here from SpellEffects.cpp ?
-            // damage *= float(100.f + 15.f * caster->getVictim()->GetDoTsByCaster(caster->GetOwnerGUID())) / 100.f;
-        }
-
-        // For Improved Felhunter
-        void HandleAfterHitEffect()
-        {
-            Unit *caster = GetCaster();
-            if(!caster) { return; };
-
-            // break if our caster is not a pet
-            if(!(caster->GetTypeId() == TYPEID_UNIT && caster->ToCreature()->isPet())) { return; };
-
-            // break if pet has no owner and/or owner is not a player
-            Unit *owner = caster->GetOwner();
-            if(!(owner && (owner->GetTypeId() == TYPEID_PLAYER))) { return; };
-            
-            int32 amount;
-            // rank 1 - 4%
-            if(owner->HasAura(WARLOCK_IMPROVED_FELHUNTER_R1)) { amount = 5; };
-
-            // rank 2 - 8%
-            if(owner->HasAura(WARLOCK_IMPROVED_FELHUNTER_R2)) { amount = 9; };
-            
-            // Finally return the Mana to our Caster
-            if(AuraEffect * aurEff = owner->GetAuraEffect(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_WARLOCK, 214, 0))
-                caster->CastCustomSpell(caster,WARLOCK_IMPROVED_FELHUNTER_EFFECT,&amount,NULL,NULL,true,NULL,aurEff,caster->GetGUID());
-        }
-
-        void Register()
-        {
-//            OnEffectHitTarget += SpellEffectFn(spell_warl_shadow_bite_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-            AfterHit += SpellHitFn(spell_warl_shadow_bite_SpellScript::HandleAfterHitEffect);
-        }
-    };
-
-    SpellScript* GetSpellScript() const
-    {
-        return new spell_warl_shadow_bite_SpellScript();
-    }
-};
-
-class spell_warl_banish : public SpellScriptLoader
+class spell_warl_haunt : public SpellScriptLoader
 {
     public:
-        spell_warl_banish() : SpellScriptLoader("spell_warl_banish") { }
+        spell_warl_haunt() : SpellScriptLoader("spell_warl_haunt") { }
 
-        class spell_warl_banish_SpellScript : public SpellScript
+        class spell_warl_haunt_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_warl_banish_SpellScript);
+            PrepareSpellScript(spell_warl_haunt_SpellScript);
 
-            bool Load()
+            void HandleOnHit()
             {
-                _removed = false;
-                return true;
-            }
-
-            void HandleBanish()
-            {
-                if (Unit* target = GetHitUnit())
-                {
-                    if (target->GetAuraEffect(SPELL_AURA_SCHOOL_IMMUNITY, SPELLFAMILY_WARLOCK, 0, 0x08000000, 0))
-                    {
-                        //No need to remove old aura since its removed due to not stack by current Banish aura
-                        PreventHitDefaultEffect(EFFECT_0);
-                        PreventHitDefaultEffect(EFFECT_1);
-                        PreventHitDefaultEffect(EFFECT_2);
-                        _removed = true;
-                    }
-                }
-            }
-
-            void RemoveAura()
-            {
-                if (_removed)
-                    PreventHitAura();
+                if (Aura* aura = GetHitAura())
+                    if (AuraEffect* aurEff = aura->GetEffect(EFFECT_1))
+                        aurEff->SetAmount(CalculatePctN(aurEff->GetAmount(), GetHitDamage()));
             }
 
             void Register()
             {
-                BeforeHit += SpellHitFn(spell_warl_banish_SpellScript::HandleBanish);
-                AfterHit += SpellHitFn(spell_warl_banish_SpellScript::RemoveAura);
+                OnHit += SpellHitFn(spell_warl_haunt_SpellScript::HandleOnHit);
+            }
+        };
+
+        class spell_warl_haunt_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_warl_haunt_AuraScript);
+
+            bool Validate(SpellInfo const* /*spell*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(WARLOCK_HAUNT_HEAL))
+                    return false;
+                return true;
             }
 
-            bool _removed;
+            void HandleRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
+            {
+                if (GetTargetApplication()->GetRemoveMode() != AURA_REMOVE_BY_ENEMY_SPELL && GetTargetApplication()->GetRemoveMode() != AURA_REMOVE_BY_EXPIRE)
+                    return;
+
+                if (Unit* caster = GetCaster())
+                {
+                    int32 amount = aurEff->GetAmount();
+                    GetTarget()->CastCustomSpell(caster, WARLOCK_HAUNT_HEAL, &amount, NULL, NULL, true, NULL, aurEff, GetCasterGUID());
+                }
+            }
+
+            void Register()
+            {
+                OnEffectRemove += AuraEffectApplyFn(spell_warl_haunt_AuraScript::HandleRemove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+            }
         };
 
         SpellScript* GetSpellScript() const
         {
-            return new spell_warl_banish_SpellScript();
+            return new spell_warl_haunt_SpellScript();
+        }
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_warl_haunt_AuraScript();
+        }
+};
+
+class spell_warl_unstable_affliction : public SpellScriptLoader
+{
+    public:
+        spell_warl_unstable_affliction() : SpellScriptLoader("spell_warl_unstable_affliction") { }
+
+        class spell_warl_unstable_affliction_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_warl_unstable_affliction_AuraScript);
+
+            bool Validate(SpellInfo const* /*spell*/)
+            {
+                if (!sSpellMgr->GetSpellInfo(WARLOCK_UNSTABLE_AFFLICTION_DISPEL))
+                    return false;
+                return true;
+            }
+
+            void HandleDispel(DispelInfo* dispelInfo)
+            {
+                if (Unit* caster = GetCaster())
+                    if (AuraEffect const* aurEff = GetEffect(EFFECT_0))
+                    {
+                        int32 damage = aurEff->GetAmount() * 9;
+                        // backfire damage and silence
+                        caster->CastCustomSpell(dispelInfo->GetDispeller(), WARLOCK_UNSTABLE_AFFLICTION_DISPEL, &damage, NULL, NULL, true, NULL, aurEff);
+                    }
+            }
+
+            void Register()
+            {
+                AfterDispel += AuraDispelFn(spell_warl_unstable_affliction_AuraScript::HandleDispel);
+            }
+        };
+
+        AuraScript* GetAuraScript() const
+        {
+            return new spell_warl_unstable_affliction_AuraScript();
         }
 };
 
@@ -618,6 +638,6 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_life_tap();
     new spell_warl_demonic_circle_summon();
     new spell_warl_demonic_circle_teleport();
-    new spell_warl_shadow_bite();
-    new spell_warl_banish();
+    new spell_warl_haunt();
+    new spell_warl_unstable_affliction();
 }

@@ -148,13 +148,6 @@ class ChatHandler
         bool HandleBanListCharacterCommand(const char* args);
         bool HandleBanListIPCommand(const char* args);
 
-        bool HandleCastCommand(const char *args);
-        bool HandleCastBackCommand(const char *args);
-        bool HandleCastDistCommand(const char *args);
-        bool HandleCastSelfCommand(const char *args);
-        bool HandleCastTargetCommand(const char *args);
-        bool HandleCastDestCommand(const char *args);
-
         bool HandleCharacterCustomizeCommand(const char* args);
         bool HandleCharacterChangeFactionCommand(const char* args);
         bool HandleCharacterChangeRaceCommand(const char * args);
@@ -180,11 +173,6 @@ class ChatHandler
         bool HandleGuildUninviteCommand(const char* args);
         bool HandleGuildRankCommand(const char* args);
         bool HandleGuildDeleteCommand(const char* args);
-
-        bool HandleInstanceListBindsCommand(const char* args);
-        bool HandleInstanceUnbindCommand(const char* args);
-        bool HandleInstanceStatsCommand(const char* args);
-        bool HandleInstanceSaveDataCommand(const char * args);
 
         bool HandleListAurasCommand(const char * args);
         bool HandleListCreatureCommand(const char* args);

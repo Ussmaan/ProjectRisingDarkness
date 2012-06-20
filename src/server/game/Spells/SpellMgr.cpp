@@ -3006,8 +3006,10 @@ void SpellMgr::LoadDbcDataCorrections()
 
         switch (spellInfo->Id)
         {
-            case 40244: case 40245: // Simon Game Visual
-            case 40246: case 40247: // Simon Game Visual
+            case 40244: // Simon Game Visual
+            case 40245: // Simon Game Visual
+            case 40246: // Simon Game Visual
+            case 40247: // Simon Game Visual
             case 42835: // Spout, remove damage effect, only anim is needed
                 spellInfo->Effect[0] = 0;
                 break;
@@ -3025,7 +3027,6 @@ void SpellMgr::LoadDbcDataCorrections()
                 spellInfo->EffectImplicitTargetB[0] = 0;
                 break;
             case 63665: // Charge (Argent Tournament emote on riders)
-            case 31447: // Mark of Kaz'rogal (needs target selection script)
             case 31298: // Sleep (needs target selection script)
             case 51904: // Summon Ghouls On Scarlet Crusade (this should use conditions table, script for this spell needs to be fixed)
             case 2895:  // Wrath of Air Totem rank 1 (Aura)
@@ -3206,6 +3207,9 @@ void SpellMgr::LoadDbcDataCorrections()
             case 46363: // Midsummer - Beam Attack against Ahune
                 spellInfo->EffectImplicitTargetA[0] = TARGET_SRC_CASTER;
                 spellInfo->EffectImplicitTargetB[0] = TARGET_UNIT_TARGET_ANY;
+		break;
+            case 51912: // Crafty's Ultra-Advanced Proto-Typical Shortening Blaster
+                spellInfo->EffectAmplitude[0] = 3000;
                 break;
             case 29809: // Desecration Arm - 36 instead of 37 - typo? :/
                 spellInfo->EffectRadiusIndex[0] = EFFECT_RADIUS_7_YARDS;
@@ -3336,6 +3340,10 @@ void SpellMgr::LoadDbcDataCorrections()
             case 27010: // Entangling Roots (Rank 7) -- Nature's Grasp Proc
             case 53313: // Entangling Roots (Rank 8) -- Nature's Grasp Proc
                 spellInfo->CastingTimeIndex = 1;
+                break;
+            case 59414: // Pulsing Shockwave Aura (Loken)
+                // this flag breaks movement, remove it
+                spellInfo->AttributesEx &= ~SPELL_ATTR1_CHANNELED_1;
                 break;
             case 61719: // Easter Lay Noblegarden Egg Aura - Interrupt flags copied from aura which this aura is linked with
                 spellInfo->AuraInterruptFlags = AURA_INTERRUPT_FLAG_HITBYSPELL | AURA_INTERRUPT_FLAG_TAKE_DAMAGE;
@@ -3701,11 +3709,6 @@ void SpellMgr::LoadDbcDataCorrections()
 
         switch (spellInfo->SpellFamilyName)
         {
-            case SPELLFAMILY_DRUID:
-                // Starfall Target Selection
-                if (spellInfo->SpellFamilyFlags[2] & 0x100)
-                    spellInfo->MaxAffectedTargets = 2;
-                break;
             case SPELLFAMILY_PALADIN:
                 // Seals of the Pure should affect Seal of Righteousness
                 if (spellInfo->SpellIconID == 25 && spellInfo->Attributes & SPELL_ATTR0_PASSIVE)
