@@ -51,6 +51,7 @@ enum SharedSpells
     SPELL_GREEN_BLIGHT_RESIDUE          = 72145,
 
     // The Lich King
+    SPELL_ARTHAS_TELEPORTER_CEREMONY    = 72915,
     SPELL_FROSTMOURNE_TELEPORT_VISUAL   = 73078,
 };
 
@@ -330,6 +331,8 @@ enum CreaturesIds
     NPC_NERUBAR_BROODLING                       = 37232,
     NPC_FROSTWARDEN_WARRIOR                     = 37228,
     NPC_FROSTWARDEN_SORCERESS                   = 37229,
+    // Generic
+    NPC_INVISIBLE_STALKER                       = 30298,
 };
 
 enum GameObjectsIds
@@ -414,6 +417,7 @@ enum GameObjectsIds
     GO_SIGIL_OF_THE_FROSTWING               = 202181,
 
     // The Lich King
+    GO_SCOURGE_TRANSPORTER_LK               = 202223,
     GO_ARTHAS_PLATFORM                      = 202161,
     GO_ARTHAS_PRECIPICE                     = 202078,
     GO_DOODAD_ICECROWN_THRONEFROSTYWIND01   = 202188,

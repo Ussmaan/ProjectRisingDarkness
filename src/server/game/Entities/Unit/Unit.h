@@ -795,8 +795,8 @@ public:
 
     Unit* GetDispeller() { return m_dispeller; }
     Unit* GetDispelled() { return m_dispelled; }
-    uint32 GetDispellerSpellId() { return m_dispellerSpellId; }
-    uint8 GetRemovedCharges() { return m_chargesRemoved; }
+    uint32 GetDispellerSpellId() const { return m_dispellerSpellId; }
+    uint8 GetRemovedCharges() const { return m_chargesRemoved; }
     void SetRemovedCharges(uint8 amount)
     {
         m_chargesRemoved = amount;
