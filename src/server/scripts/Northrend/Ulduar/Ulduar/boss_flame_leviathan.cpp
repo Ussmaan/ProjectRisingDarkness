@@ -1123,6 +1123,149 @@ class npc_freya_ward_summon : public CreatureScript
         }
 };
 
+//npc lore keeper
+#define GOSSIP_ITEM_1  "Activate secondary defensive systems"
+#define GOSSIP_ITEM_2  "Confirmed"
+
+class npc_lorekeeper : public CreatureScript
+{
+    public:
+        npc_lorekeeper() : CreatureScript("npc_lorekeeper") { }
+
+        struct npc_lorekeeperAI : public ScriptedAI
+        {
+            npc_lorekeeperAI(Creature* creature) : ScriptedAI(creature)
+            {
+            }
+
+            void DoAction(int32 const action)
+            {
+                // Start encounter
+                if (action == ACTION_SPAWN_VEHICLES)
+                {
+                    for (int32 i = 0; i < RAID_MODE(2, 5); ++i)
+                        DoSummon(VEHICLE_SIEGE, PosSiege[i], 3000, TEMPSUMMON_CORPSE_TIMED_DESPAWN);
+                    for (int32 i = 0; i < RAID_MODE(2, 5); ++i)
+                        DoSummon(VEHICLE_CHOPPER, PosChopper[i], 3000, TEMPSUMMON_CORPSE_TIMED_DESPAWN);
+                    for (int32 i = 0; i < RAID_MODE(2, 5); ++i)
+                        DoSummon(VEHICLE_DEMOLISHER, PosDemolisher[i], 3000, TEMPSUMMON_CORPSE_TIMED_DESPAWN);
+                    return;
+                }
+            }
+        };
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            InstanceScript* instance = creature->GetInstanceScript();
+            if (!instance)
+                return true;
+
+            switch (action)
+            {
+                case GOSSIP_ACTION_INFO_DEF+1:
+                    if (player)
+                    {
+                        player->PrepareGossipMenu(creature);
+                        instance->instance->LoadGrid(364, -16); //make sure leviathan is loaded
+
+                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+                        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    }
+                    break;
+                case GOSSIP_ACTION_INFO_DEF+2:
+                    if (player)
+                        player->CLOSE_GOSSIP_MENU();
+
+                    if (Creature* leviathan = instance->instance->GetCreature(instance->GetData64(BOSS_LEVIATHAN)))
+                    {
+                        leviathan->AI()->DoAction(ACTION_START_HARD_MODE);
+                        creature->SetVisible(false);
+                        creature->AI()->DoAction(ACTION_SPAWN_VEHICLES); // spawn the vehicles
+                        if (Creature* Delorah = creature->FindNearestCreature(NPC_DELORAH, 1000, true))
+                        {
+                            if (Creature* Branz = creature->FindNearestCreature(NPC_BRANZ_BRONZBEARD, 1000, true))
+                            {
+                                Delorah->GetMotionMaster()->MovePoint(0, Branz->GetPositionX()-4, Branz->GetPositionY(), Branz->GetPositionZ());
+                                //TODO DoScriptText(xxxx, Delorah, Branz); when reached at branz
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return true;
+        }
+
+        bool OnGossipHello(Player* player, Creature* creature)
+        {
+            InstanceScript* instance = creature->GetInstanceScript();
+            if (instance && instance->GetData(BOSS_LEVIATHAN) !=DONE && player)
+            {
+                player->PrepareGossipMenu(creature);
+
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            }
+            return true;
+        }
+
+        CreatureAI* GetAI(Creature* creature) const
+        {
+            return new npc_lorekeeperAI(creature);
+        }
+};
+
+//enable hardmode
+////npc_brann_bronzebeard this requires more work involving area triggers. if reached this guy speaks through his radio..
+//#define GOSSIP_ITEM_1  "xxxxx"
+//#define GOSSIP_ITEM_2  "xxxxx"
+//
+/*
+class npc_brann_bronzebeard : public CreatureScript
+{
+public:
+    npc_brann_bronzebeard() : CreatureScript("npc_brann_bronzebeard") { }
+
+    //bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action)
+    //{
+    //    player->PlayerTalkClass->ClearMenus();
+    //    switch (action)
+    //    {
+    //        case GOSSIP_ACTION_INFO_DEF+1:
+    //            if (player)
+    //            {
+    //                player->PrepareGossipMenu(creature);
+    //
+    //                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+    //                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+    //            }
+    //            break;
+    //        case GOSSIP_ACTION_INFO_DEF+2:
+    //            if (player)
+    //                player->CLOSE_GOSSIP_MENU();
+    //            if (Creature* Lorekeeper = creature->FindNearestCreature(NPC_LOREKEEPER, 1000, true)) //lore keeper of lorgannon
+    //                Lorekeeper->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+    //            break;
+    //    }
+    //    return true;
+    //}
+    //bool OnGossipHello(Player* player, Creature* creature)
+    //{
+    //    InstanceScript* instance = creature->GetInstanceScript();
+    //    if (instance && instance->GetData(BOSS_LEVIATHAN) !=DONE)
+    //    {
+    //        player->PrepareGossipMenu(creature);
+    //
+    //        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+    //        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+    //    }
+    //    return true;
+    //}
+    //
+}
+*/
+
 class go_ulduar_tower : public GameObjectScript
 {
     public:
@@ -1474,7 +1617,7 @@ class FlameLeviathanPursuedTargetSelector
     public:
         explicit FlameLeviathanPursuedTargetSelector(Unit* unit) : _me(unit) {};
 
-        bool operator()(Unit* target) const
+        bool operator()(WorldObject* target) const
         {
             //! No players, only vehicles (todo: check if blizzlike)
             Creature* creatureTarget = target->ToCreature();
@@ -1522,7 +1665,7 @@ class spell_pursue : public SpellScriptLoader
                 return true;
             }
 
-            void FilterTargets(std::list<Unit*>& targets)
+            void FilterTargets(std::list<WorldObject*>& targets)
             {
                 targets.remove_if(FlameLeviathanPursuedTargetSelector(GetCaster()));
                 if (targets.empty())
@@ -1538,7 +1681,7 @@ class spell_pursue : public SpellScriptLoader
                 }
             }
 
-            void FilterTargetsSubsequently(std::list<Unit*>& targets)
+            void FilterTargetsSubsequently(std::list<WorldObject*>& targets)
             {
                 targets.clear();
                 if (_target)
@@ -1565,12 +1708,12 @@ class spell_pursue : public SpellScriptLoader
 
             void Register()
             {
-                OnUnitTargetSelect += SpellUnitTargetFn(spell_pursue_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-                OnUnitTargetSelect += SpellUnitTargetFn(spell_pursue_SpellScript::FilterTargetsSubsequently, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pursue_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pursue_SpellScript::FilterTargetsSubsequently, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
                 OnEffectHitTarget += SpellEffectFn(spell_pursue_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
             }
 
-            Unit* _target;
+            WorldObject* _target;
         };
 
         SpellScript* GetSpellScript() const
