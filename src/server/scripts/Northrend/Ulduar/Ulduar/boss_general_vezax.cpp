@@ -559,7 +559,7 @@ class spell_general_vezax_mark_of_the_faceless_drain : public SpellScriptLoader
         {
             PrepareSpellScript(spell_general_vezax_mark_of_the_faceless_drain_SpellScript);
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 unitList.remove(GetExplTargetUnit()); 
             }
