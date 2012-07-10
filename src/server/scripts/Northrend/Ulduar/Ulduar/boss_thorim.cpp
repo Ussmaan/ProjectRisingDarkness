@@ -1200,7 +1200,7 @@ public:
 class NotInArenaCheck
 {
     public:
-        bool operator() (Unit* unit)
+        bool operator() (WorldObject* unit)
         {
             return !IN_ARENA(unit);
         }
