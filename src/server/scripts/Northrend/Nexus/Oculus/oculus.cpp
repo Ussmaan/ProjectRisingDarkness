@@ -868,29 +868,6 @@ class spell_oculus_drake_flag : public SpellScriptLoader
             return new spell_oculus_drake_flagAuraScript();
         }
 };
-
-void AddSC_oculus()
-{
-    new npc_oculus_drake();
-    new npc_centrifuge_construct();
-    new npc_ringlord_conjurer();
-    new npc_ringlord_sorceress();
-    new npc_greater_ley_whelp();
-    new npc_azure_ring_guardian();
-    // Amber Drake spells
-    new spell_oculus_shock_lance();
-    new spell_oculus_stop_time();
-    new spell_oculus_temporal_rift();
-    // Emerald Drake spells
-    new spell_oculus_touch_nightmare();
-    new spell_oculus_dream_funnel();
-    // Ruby Drake Spells
-    new spell_oculus_evasive_charges();
-    // Common Drake Spells
-    new spell_oculus_soar();
-    new spell_oculus_rider_aura();
-    new spell_oculus_drake_flag();
-=======
 class spell_gen_stop_time : public SpellScriptLoader
 {
 public:
@@ -925,7 +902,23 @@ public:
 void AddSC_oculus()
 {
     new npc_oculus_drake();
-    new npc_image_belgaristrasz();
+    new npc_centrifuge_construct();
+    new npc_ringlord_conjurer();
+    new npc_ringlord_sorceress();
+    new npc_greater_ley_whelp();
+    new npc_azure_ring_guardian();
+    // Amber Drake spells
+    new spell_oculus_shock_lance();
+    new spell_oculus_stop_time();
+    new spell_oculus_temporal_rift();
+    // Emerald Drake spells
+    new spell_oculus_touch_nightmare();
+    new spell_oculus_dream_funnel();
+    // Ruby Drake Spells
+    new spell_oculus_evasive_charges();
+    // Common Drake Spells
+    new spell_oculus_soar();
+    new spell_oculus_rider_aura();
+    new spell_oculus_drake_flag();
     new spell_gen_stop_time();
->>>>>>> tc/master
 }
