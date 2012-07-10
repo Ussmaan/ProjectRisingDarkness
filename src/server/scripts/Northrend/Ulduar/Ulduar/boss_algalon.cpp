@@ -1426,7 +1426,7 @@ class spell_algalon_cosmic_smash_initial : public SpellScriptLoader
                 OnEffectHitTarget += SpellEffectFn(spell_algalon_cosmic_smash_initial_SpellScript::HandleForceCast, EFFECT_0, SPELL_EFFECT_FORCE_CAST);
             }
 
-            std::list<Unit*> m_unitList; 
+            std::list<WorldObject*> m_unitList; 
         };
 
         SpellScript* GetSpellScript() const
