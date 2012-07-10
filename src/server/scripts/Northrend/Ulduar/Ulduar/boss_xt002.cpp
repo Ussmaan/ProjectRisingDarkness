@@ -848,7 +848,7 @@ class spell_xt002_searing_light : public SpellScriptLoader
                 return GetCaster()->GetTypeId() == TYPEID_UNIT;
             }
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 unitList.remove_if(BombTargetSelector(GetCaster()->ToCreature(), GetCaster()->getVictim()));
 
@@ -860,7 +860,7 @@ class spell_xt002_searing_light : public SpellScriptLoader
                 unitList.push_back(_target);
             }
 
-            void SetTarget(std::list<Unit*>& unitList)
+            void SetTarget(std::list<WorldObject*>& unitList)
             {
                 unitList.clear();
                 if (_target)
@@ -873,7 +873,7 @@ class spell_xt002_searing_light : public SpellScriptLoader
                 OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_xt002_searing_light_targeting_SpellScript::SetTarget, EFFECT_1, TARGET_UNIT_DEST_AREA_ENEMY);
             }
 
-            Unit* _target;
+            WorldObject* _target;
         };
 
         class spell_xt002_searing_light_spawn_life_spark_AuraScript : public AuraScript
@@ -920,7 +920,7 @@ class spell_xt002_gravity_bomb : public SpellScriptLoader
                 return GetCaster()->GetTypeId() == TYPEID_UNIT;
             }
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 unitList.remove_if(BombTargetSelector(GetCaster()->ToCreature(), GetCaster()->getVictim()));
 
@@ -932,7 +932,7 @@ class spell_xt002_gravity_bomb : public SpellScriptLoader
                 unitList.push_back(_target);
             }
 
-            void SetTarget(std::list<Unit*>& unitList)
+            void SetTarget(std::list<WorldObject*>& unitList)
             {
                 unitList.clear();
                 if (_target)
@@ -945,7 +945,7 @@ class spell_xt002_gravity_bomb : public SpellScriptLoader
                 OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_xt002_gravity_bomb_targeting_SpellScript::SetTarget, EFFECT_2, TARGET_UNIT_DEST_AREA_ENEMY);
             }
 
-            Unit* _target;
+            WorldObject* _target;
         };
 
         class spell_xt002_gravity_bomb_aura_AuraScript : public AuraScript

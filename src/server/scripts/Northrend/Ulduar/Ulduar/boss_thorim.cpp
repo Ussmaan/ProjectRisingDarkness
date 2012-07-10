@@ -1215,7 +1215,7 @@ class spell_stormhammer_targeting : public SpellScriptLoader
         {
             PrepareSpellScript(spell_stormhammer_targeting_SpellScript);
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 _target = NULL;
                 unitList.remove_if(NotInArenaCheck());
@@ -1223,14 +1223,14 @@ class spell_stormhammer_targeting : public SpellScriptLoader
                 if (unitList.empty())
                     return;
 
-                std::list<Unit*>::iterator itr = unitList.begin();
+                std::list<WorldObject*>::iterator itr = unitList.begin();
                 std::advance(itr, urand(0, unitList.size() - 1));
                 _target = *itr;
                 unitList.clear();
                 unitList.push_back(_target);
             }
 
-            void SetTarget(std::list<Unit*>& unitList)
+            void SetTarget(std::list<WorldObject*>& unitList)
             {
                 unitList.clear();
 
@@ -1245,7 +1245,7 @@ class spell_stormhammer_targeting : public SpellScriptLoader
                 OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_stormhammer_targeting_SpellScript::SetTarget, EFFECT_2, TARGET_UNIT_SRC_AREA_ENEMY);
             }
 
-            Unit* _target;
+            WorldObject* _target;
         };
 
         SpellScript* GetSpellScript() const
