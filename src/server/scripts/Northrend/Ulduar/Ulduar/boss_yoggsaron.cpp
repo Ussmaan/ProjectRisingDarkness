@@ -2922,7 +2922,7 @@ class NotIsWeakenedImmortalCheck
 
         bool operator() (WorldObject* unit)
         {
-            return !(unit->HasAura(SPELL_WEAKENED));
+            return !(unit->ToUnit()->HasAura(SPELL_WEAKENED));
         }
 };
 
