@@ -99,8 +99,6 @@ enum Drakes
     NPC_VERDISA                                   = 27657,
     NPC_BELGARISTRASZ                             = 27658,
     NPC_ETERNOS                                   = 27659,
-
-    SPELL_SHOCK_CHARGE                            = 49836,
 };
 
 class npc_oculus_drake : public CreatureScript
