@@ -821,7 +821,7 @@ class BombTargetSelector : public std::unary_function<Unit *, bool>
     public:
         BombTargetSelector(Creature* me, const Unit* victim) : _me(me), _victim(victim) {}
 
-        bool operator() (Unit* target)
+        bool operator() (WorldObject* target)
         {
             if (target == _victim && _me->getThreatManager().getThreatList().size() > 1)
                 return true;
