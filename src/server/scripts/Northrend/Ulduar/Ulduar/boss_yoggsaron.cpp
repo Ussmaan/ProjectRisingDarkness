@@ -2920,7 +2920,7 @@ class NotIsWeakenedImmortalCheck
     public:
         NotIsWeakenedImmortalCheck() { }
 
-        bool operator() (Unit* unit)
+        bool operator() (WorldObject* unit)
         {
             return !(unit->HasAura(SPELL_WEAKENED));
         }
@@ -2935,7 +2935,7 @@ class spell_titanic_storm_targeting : public SpellScriptLoader
         {
             PrepareSpellScript(spell_titanic_storm_targeting_SpellScript)
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 unitList.remove_if(NotIsWeakenedImmortalCheck());
             }
