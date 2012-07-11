@@ -1560,7 +1560,71 @@ class achievement_all_you_can_eat : public AchievementCriteriaScript
             return target->GetAI()->GetData(DATA_MYSTIC_BUFFET_STACK) <= 5;
         }
 };
+// =====================
+//  los work around
+//======================      	
+class FrostBombTargetSelector	  	
+{	  	
+    public:	  	
 
+       FrostBombTargetSelector(Unit* caster, std::list<Creature*> const& collisionList) : _caster(caster), _collisionList(collisionList) { }
+	  	
+       bool operator()(Unit* unit)	  	
+        {	  	
+            if (unit->HasAura(SPELL_ICE_TOMB_DAMAGE))
+	  	
+                return true;
+	  		  	
+            for (std::list<Creature*>::const_iterator itr = _collisionList.begin(); itr != _collisionList.end(); ++itr)
+                if ((*itr)->IsInBetween(_caster, unit))	  	
+                    return true;	  	
+
+            return false;	
+        }	  	
+        
+    private:
+	  	
+        Unit* _caster;
+        std::list<Creature*> const& _collisionList;	  	
+};	  	
+
+class spell_sindragosa_collision_filter : public SpellScriptLoader	  	
+{	  	
+    public:
+	  	
+        spell_sindragosa_collision_filter() : SpellScriptLoader("spell_sindragosa_collision_filter") { }	  		  	
+        class spell_sindragosa_collision_filter_SpellScript : public SpellScript	  	
+        {	  	
+           PrepareSpellScript(spell_sindragosa_collision_filter_SpellScript);	
+           bool Validate(SpellInfo const* /*spell*/)	  	
+            {	  	
+                if (!sSpellMgr->GetSpellInfo(SPELL_ICE_TOMB_DAMAGE))	  	
+                    return false;
+  	
+                return true;	  	
+            }
+	  		  	
+            void FilterTargets(std::list<Unit*>& unitList)	  	
+            {	  	
+               std::list<Creature*> tombs;	  	
+                GetCreatureListWithEntryInGrid(tombs, GetCaster(), NPC_ICE_TOMB, 200.0f);	  
+               unitList.remove_if (FrostBombTargetSelector(GetCaster(), tombs));	  	
+            }
+		
+           void Register()
+            {	  	
+                OnUnitTargetSelect += SpellUnitTargetFn(spell_sindragosa_collision_filter_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY); 	
+            }
+	  	
+        };
+	  	  	
+        SpellScript* GetSpellScript() const	  	
+        { 	
+            return new spell_sindragosa_collision_filter_SpellScript();	  	
+        }	  	
+
+};	  	
+//========================
 void AddSC_boss_sindragosa()
 {
     new boss_sindragosa();
@@ -1582,4 +1646,5 @@ void AddSC_boss_sindragosa()
     new spell_trigger_spell_from_caster("spell_sindragosa_ice_tomb_dummy", SPELL_FROST_BEACON);
     new at_sindragosa_lair();
     new achievement_all_you_can_eat();
+    new spell_sindragosa_collision_filter();
 }
