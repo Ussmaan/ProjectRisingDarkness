@@ -1439,7 +1439,7 @@ class spell_surge_of_power_targeting : public SpellScriptLoader
         {
             PrepareSpellScript(spell_surge_of_power_targeting_SpellScript)
 
-            void FilterTargets(std::list<Unit*>& unitList)
+            void FilterTargets(std::list<WorldObject*>& unitList)
             {
                 unitList.clear();
                 Unit* caster = GetCaster();
@@ -1454,7 +1454,7 @@ class spell_surge_of_power_targeting : public SpellScriptLoader
 
             void Register()
             {
-                OnUnitTargetSelect += SpellUnitTargetFn(spell_surge_of_power_targeting_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_surge_of_power_targeting_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
             }
         };
 
